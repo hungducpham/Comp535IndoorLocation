@@ -29,7 +29,7 @@ public class WiFiDataAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return this.wifidata.size();//数目
+        return this.wifidata.size();
     }
 
     @Override
@@ -55,10 +55,12 @@ public class WiFiDataAdapter extends BaseAdapter {
 
         return view;
     }
+
     @Override
     public long getItemId(int position) {
         return position;
     }
+
     @Override
     public Object getItem(int position) {
         return wifidata.get(position);
