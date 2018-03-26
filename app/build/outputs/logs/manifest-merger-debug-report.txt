@@ -1,0 +1,182 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+MERGED from [com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/FlycoTabLayout_Lib-2.1.2.aar/1cbb87f028f9c29bfe738cb6ac1ebd63/AndroidManifest.xml:2:1-12:12
+MERGED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:appcompat-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/24aa7bd67a5ab954ac1e8fb589fdd4a7/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/e21c14b6eb3e75a03cbfaa3d9b2a2500/AndroidManifest.xml:2:1-11:12
+MERGED from [com.android.support:animated-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/a358320e7cd134553dfe0f4f0e7b55bb/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/438c682a7e204b58876229cc528f7ce2/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:recyclerview-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/137212d0d4bedb6e4067fdaae5b39cbe/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:transition:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/b0f48e6ac40e759e140d9b74231a2dc1/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-v4:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/39c117c1052f0098f92de8dd0dd133c8/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-media-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/29d86f4c9ca799f0e2d7c35fa1e0ddbf/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-fragment:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/58bc481f9fbe4fd8311aba9685979a6b/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-core-utils:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/c84d8dee275e3dd51b8cb519aadb96c8/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-core-ui:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9fd9dd026e0937c59edafb7da80cb758/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/8caf64d080315734edf3c0679d5af822/AndroidManifest.xml:17:1-31:12
+MERGED from [android.arch.lifecycle:runtime:1.0.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/4ff6bc2deb6491a6bebcba45d536045d/AndroidManifest.xml:17:1-30:12
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+	package
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:3:5-49
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:1-23:12
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.CHANGE_WIFI_STATE
+ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:5:5-75
+	android:name
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:5:22-73
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:6:5-75
+	android:name
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:6:22-73
+application
+ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:7:5-21:19
+MERGED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:appcompat-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/24aa7bd67a5ab954ac1e8fb589fdd4a7/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:appcompat-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/24aa7bd67a5ab954ac1e8fb589fdd4a7/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/e21c14b6eb3e75a03cbfaa3d9b2a2500/AndroidManifest.xml:9:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/e21c14b6eb3e75a03cbfaa3d9b2a2500/AndroidManifest.xml:9:5-20
+MERGED from [com.android.support:animated-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/a358320e7cd134553dfe0f4f0e7b55bb/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:animated-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/a358320e7cd134553dfe0f4f0e7b55bb/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/438c682a7e204b58876229cc528f7ce2/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/438c682a7e204b58876229cc528f7ce2/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:recyclerview-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/137212d0d4bedb6e4067fdaae5b39cbe/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:recyclerview-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/137212d0d4bedb6e4067fdaae5b39cbe/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:transition:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/b0f48e6ac40e759e140d9b74231a2dc1/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:transition:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/b0f48e6ac40e759e140d9b74231a2dc1/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-v4:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/39c117c1052f0098f92de8dd0dd133c8/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-v4:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/39c117c1052f0098f92de8dd0dd133c8/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-media-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/29d86f4c9ca799f0e2d7c35fa1e0ddbf/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-media-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/29d86f4c9ca799f0e2d7c35fa1e0ddbf/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-fragment:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/58bc481f9fbe4fd8311aba9685979a6b/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-fragment:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/58bc481f9fbe4fd8311aba9685979a6b/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-core-utils:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/c84d8dee275e3dd51b8cb519aadb96c8/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-core-utils:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/c84d8dee275e3dd51b8cb519aadb96c8/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-core-ui:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9fd9dd026e0937c59edafb7da80cb758/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-core-ui:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9fd9dd026e0937c59edafb7da80cb758/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/8caf64d080315734edf3c0679d5af822/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/8caf64d080315734edf3c0679d5af822/AndroidManifest.xml:25:5-29:19
+MERGED from [android.arch.lifecycle:runtime:1.0.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/4ff6bc2deb6491a6bebcba45d536045d/AndroidManifest.xml:24:5-28:19
+MERGED from [android.arch.lifecycle:runtime:1.0.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/4ff6bc2deb6491a6bebcba45d536045d/AndroidManifest.xml:24:5-28:19
+	android:supportsRtl
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:12:9-35
+	android:label
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:10:9-41
+	android:roundIcon
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:11:9-54
+	android:icon
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:9:9-43
+	android:allowBackup
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:8:9-35
+	android:theme
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:13:9-40
+activity#group1.comp535.rice.indoorlocation.MainActivity
+ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:14:9-20:20
+	android:name
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:14:19-47
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:15:13-19:29
+action#android.intent.action.MAIN
+ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:16:17-69
+	android:name
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:16:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:18:17-77
+	android:name
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml:18:27-74
+uses-sdk
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+MERGED from [com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/FlycoTabLayout_Lib-2.1.2.aar/1cbb87f028f9c29bfe738cb6ac1ebd63/AndroidManifest.xml:8:5-10:41
+MERGED from [com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/FlycoTabLayout_Lib-2.1.2.aar/1cbb87f028f9c29bfe738cb6ac1ebd63/AndroidManifest.xml:8:5-10:41
+MERGED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:21:5-23:62
+MERGED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:21:5-23:62
+MERGED from [com.android.support:appcompat-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/24aa7bd67a5ab954ac1e8fb589fdd4a7/AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:appcompat-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/24aa7bd67a5ab954ac1e8fb589fdd4a7/AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/e21c14b6eb3e75a03cbfaa3d9b2a2500/AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/e21c14b6eb3e75a03cbfaa3d9b2a2500/AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support:animated-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/a358320e7cd134553dfe0f4f0e7b55bb/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/a358320e7cd134553dfe0f4f0e7b55bb/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/438c682a7e204b58876229cc528f7ce2/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/438c682a7e204b58876229cc528f7ce2/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/137212d0d4bedb6e4067fdaae5b39cbe/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/137212d0d4bedb6e4067fdaae5b39cbe/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/b0f48e6ac40e759e140d9b74231a2dc1/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/b0f48e6ac40e759e140d9b74231a2dc1/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/39c117c1052f0098f92de8dd0dd133c8/AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-v4:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/39c117c1052f0098f92de8dd0dd133c8/AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-media-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/29d86f4c9ca799f0e2d7c35fa1e0ddbf/AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-media-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/29d86f4c9ca799f0e2d7c35fa1e0ddbf/AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-fragment:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/58bc481f9fbe4fd8311aba9685979a6b/AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-fragment:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/58bc481f9fbe4fd8311aba9685979a6b/AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-core-utils:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/c84d8dee275e3dd51b8cb519aadb96c8/AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:support-core-utils:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/c84d8dee275e3dd51b8cb519aadb96c8/AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:support-core-ui:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9fd9dd026e0937c59edafb7da80cb758/AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-core-ui:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9fd9dd026e0937c59edafb7da80cb758/AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/8caf64d080315734edf3c0679d5af822/AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/8caf64d080315734edf3c0679d5af822/AndroidManifest.xml:21:5-23:58
+MERGED from [android.arch.lifecycle:runtime:1.0.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/4ff6bc2deb6491a6bebcba45d536045d/AndroidManifest.xml:20:5-22:41
+MERGED from [android.arch.lifecycle:runtime:1.0.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/4ff6bc2deb6491a6bebcba45d536045d/AndroidManifest.xml:20:5-22:41
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+	tools:overrideLibrary
+		ADDED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:23:9-59
+	android:targetSdkVersion
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+		ADDED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/davidlx/Desktop/comp503/IndoorLocation/app/src/main/AndroidManifest.xml
+meta-data#android.support.VERSION
+ADDED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:appcompat-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/24aa7bd67a5ab954ac1e8fb589fdd4a7/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:appcompat-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/24aa7bd67a5ab954ac1e8fb589fdd4a7/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:animated-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/a358320e7cd134553dfe0f4f0e7b55bb/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:animated-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/a358320e7cd134553dfe0f4f0e7b55bb/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:support-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/438c682a7e204b58876229cc528f7ce2/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:support-vector-drawable:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/438c682a7e204b58876229cc528f7ce2/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:recyclerview-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/137212d0d4bedb6e4067fdaae5b39cbe/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:recyclerview-v7:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/137212d0d4bedb6e4067fdaae5b39cbe/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:transition:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/b0f48e6ac40e759e140d9b74231a2dc1/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:transition:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/b0f48e6ac40e759e140d9b74231a2dc1/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:support-v4:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/39c117c1052f0098f92de8dd0dd133c8/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-v4:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/39c117c1052f0098f92de8dd0dd133c8/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-media-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/29d86f4c9ca799f0e2d7c35fa1e0ddbf/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-media-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/29d86f4c9ca799f0e2d7c35fa1e0ddbf/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-fragment:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/58bc481f9fbe4fd8311aba9685979a6b/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-fragment:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/58bc481f9fbe4fd8311aba9685979a6b/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-core-utils:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/c84d8dee275e3dd51b8cb519aadb96c8/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-core-utils:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/c84d8dee275e3dd51b8cb519aadb96c8/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-core-ui:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9fd9dd026e0937c59edafb7da80cb758/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-core-ui:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9fd9dd026e0937c59edafb7da80cb758/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/8caf64d080315734edf3c0679d5af822/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-compat:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/8caf64d080315734edf3c0679d5af822/AndroidManifest.xml:26:9-28:38
+	android:value
+		ADDED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:28:13-35
+	android:name
+		ADDED from [com.android.support:design:26.1.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/bde60660f77618d9fe7702661c371442/AndroidManifest.xml:27:13-51
+meta-data#android.arch.lifecycle.VERSION
+ADDED from [android.arch.lifecycle:runtime:1.0.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/4ff6bc2deb6491a6bebcba45d536045d/AndroidManifest.xml:25:9-27:47
+	android:value
+		ADDED from [android.arch.lifecycle:runtime:1.0.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/4ff6bc2deb6491a6bebcba45d536045d/AndroidManifest.xml:27:13-44
+	android:name
+		ADDED from [android.arch.lifecycle:runtime:1.0.0] /Users/davidlx/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/4ff6bc2deb6491a6bebcba45d536045d/AndroidManifest.xml:26:13-58
