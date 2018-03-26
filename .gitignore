@@ -7,3 +7,66 @@
 /build
 /captures
 .externalNativeBuild
+build/generated/assets/
+build/generated/res/pngs/androidTest/
+build/generated/res/resValues/
+build/generated/res/rs/
+build/generated/source/aidl/
+build/generated/source/apt/
+build/generated/source/rs/
+build/intermediates/assets/
+build/intermediates/check-manifest/
+build/intermediates/incremental/mergeDebugAndroidTestResources/aapt-temp/
+build/intermediates/incremental/mergeDebugAndroidTestResources/stripped.dir/
+build/intermediates/incremental/mergeDebugResources/aapt-temp/
+build/intermediates/incremental/mergeDebugResources/merged.dir/
+build/intermediates/incremental/mergeDebugResources/stripped.dir/
+build/intermediates/incremental/processDebugAndroidTestResources/
+build/intermediates/incremental/processDebugResources/
+build/intermediates/jniLibs/
+build/intermediates/prebuild/
+build/intermediates/rs/
+build/intermediates/shaders/
+build/intermediates/tmp/
+build/tmp/
+libs/
+
+
+# Built application files
+/*/build/
+app/build/*
+
+# Crashlytics configuations
+com_crashlytics_export_strings.xml
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Gradle generated files
+.gradle/
+
+# Signing files
+.signing/
+
+# User-specific configurations
+.idea/libraries/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/.name
+.idea/compiler.xml
+.idea/copyright/profiles_settings.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/scopes/scope_settings.xml
+.idea/vcs.xml
+*.iml
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

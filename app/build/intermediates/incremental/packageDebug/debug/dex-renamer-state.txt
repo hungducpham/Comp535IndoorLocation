@@ -1,4 +1,0 @@
-#Mon Mar 26 15:19:35 CDT 2018
-base.0=/Users/davidlx/Desktop/comp503/IndoorLocation/app/build/intermediates/transforms/dexMerger/debug/0
-path.0=classes.dex
-renamed.0=classes.dex
