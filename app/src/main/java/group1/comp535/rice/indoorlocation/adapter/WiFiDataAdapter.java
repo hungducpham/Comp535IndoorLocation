@@ -48,7 +48,7 @@ public class WiFiDataAdapter extends BaseAdapter {
         wifi_name.setText(wifidata.get(position).getName());
 
         TextView bssid = (TextView) view.findViewById(R.id.bssid);
-        bssid.setText("BSSID: "+wifidata.get(position).getName());
+        bssid.setText("BSSID: "+wifidata.get(position).getBSSID());
 
         TextView strength = (TextView) view.findViewById(R.id.strength);
         strength.setText("Strength: "+wifidata.get(position).getStrength1()+" dBm / "+wifidata.get(position).getStrength2()+" dBm");
