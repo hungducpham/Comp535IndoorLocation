@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -23,12 +24,16 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import group1.comp535.rice.indoorlocation.R;
 import group1.comp535.rice.indoorlocation.adapter.WiFiDataAdapter;
+import group1.comp535.rice.indoorlocation.data.LocationPoint;
 import group1.comp535.rice.indoorlocation.data.WiFiData;
 
 /**
@@ -40,6 +45,8 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
     List<WiFiData> wifidata = new LinkedList<WiFiData>();
     private WiFiDataAdapter adapter;
     WifiManager wifi;
+
+    String currentSelection;
 
     public static RecordingLocationFragment getInstance() {
         RecordingLocationFragment sf = new RecordingLocationFragment();
@@ -57,12 +64,12 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
             requestPermissions(new String[]{Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE,Manifest.permission.ACCESS_COARSE_LOCATION},
                     1);
 
-            Toast.makeText(getContext(),"Requesting Permission", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(),"Requesting Permission", Toast.LENGTH_LONG).show();
             Log.v("Permission","Permission Requesting");
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
 
         }else{
-            Toast.makeText(getContext(),"No Need for permission", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(),"No Need for permission", Toast.LENGTH_LONG).show();
             Log.v("Permission","No Permission Issue");
         }
     }
@@ -73,11 +80,11 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
         Log.v("Permission Result",requestCode+"");
         if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(getContext(),"Permission Granted", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(),"Permission Granted", Toast.LENGTH_LONG).show();
             Log.v("Permission Result","Granted");
 
         }else{
-            Toast.makeText(getContext(),"Permission Denied", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(),"Permission Denied", Toast.LENGTH_LONG).show();
             Log.v("Permission Result","Denied");
         }
     }
@@ -87,6 +94,7 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
         View v = inflater.inflate(R.layout.record_location_fragment, null);
         ListView listView = (ListView) v.findViewById(R.id.record_data);
         Button refreshButton = (Button) v.findViewById(R.id.refresh);
+        Button recordButton = (Button) v.findViewById(R.id.record);
 
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,13 +104,20 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
             }
         });
 
+        recordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recordLocation();
+            }
+        });
+
         Spinner spinner = (Spinner) v.findViewById(R.id.curentLocationSpinner);
-// Create an ArrayAdapter using the string array and a default spinner layout
+        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> array_adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.Position_Array, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+        // Specify the layout to use when the list of choices appears
         array_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
+        // Apply the adapter to the spinner
         spinner.setAdapter(array_adapter);
         spinner.setOnItemSelectedListener(this);
 
@@ -137,6 +152,36 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
         return v;
     }
 
+    private void recordLocation() {
+        if (this.currentSelection == null || this.currentSelection.length() == 0){
+            Toast.makeText(getContext(),"Please make a selection",Toast.LENGTH_SHORT);
+            return;
+        }
+
+//        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.
+//        editor.putInt(getString(R.string.saved_high_score_key), newHighScore);
+//        editor.commit();
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+        LocationPoint tempPoint = new LocationPoint();
+        tempPoint.setLocationName(this.currentSelection);
+        tempPoint.setWifidata(this.wifidata);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(tempPoint);
+
+        Set<String> nameList =  sharedPref.getStringSet("namelist",new HashSet<String>());
+        nameList.add(this.currentSelection);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(this.currentSelection,json);
+        editor.putStringSet("namelist",nameList);
+        editor.commit();
+    }
+
     public void scanWiFiData()
     {
 
@@ -148,6 +193,7 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         Log.v("Select Item",adapterView.getItemAtPosition(i).toString());
+        currentSelection = adapterView.getItemAtPosition(i).toString();
     }
 
     @Override

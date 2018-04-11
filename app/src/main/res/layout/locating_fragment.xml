@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Determine Location"
-            android:id="@+id/record"
+            android:id="@+id/locating"
             android:enabled="true" />
 
     </LinearLayout>
