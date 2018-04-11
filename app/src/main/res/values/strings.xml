@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">IndoorLocation</string>
+    <string-array name="Position_Array">
+        <item>Duncan Hall 1</item>
+        <item>Duncan Hall 2</item>
+        <item>Duncan Hall 3</item>
+        <item>Duncan Hall 4</item>
+        <item>Duncan Hall 5</item>
+        <item>Duncan Hall 6</item>
+        <item>Duncan Hall 7</item>
+        <item>Duncan Hall 8</item>
+    </string-array>
 </resources>

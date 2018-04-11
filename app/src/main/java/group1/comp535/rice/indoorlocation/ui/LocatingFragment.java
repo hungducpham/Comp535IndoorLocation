@@ -8,6 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,15 +48,6 @@ public class LocatingFragment extends Fragment {
         View v = inflater.inflate(R.layout.locating_fragment, null);
         ListView listView = (ListView) v.findViewById(R.id.record_data);
 
-        wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-        wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-        wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-        wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-        wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-        wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-        wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-        wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-
         adapter = new WiFiDataAdapter(getActivity(),wifidata);
         listView.setAdapter(adapter);
 
@@ -71,27 +63,19 @@ public class LocatingFragment extends Fragment {
             @Override
             public void onReceive(Context c, Intent intent)
             {
+
                 wifidata.clear();
                 List<ScanResult> results = wifi.getScanResults();
+                Log.v("Wifi Data Size",results.size()+"");
                 for (ScanResult result : results) {
-                    wifidata.add(new WiFiData(result.SSID, result.BSSID, result.level, result.level));
+                    if (result.SSID == "Rice Owls" || result.SSID == "Rice IoT"||result.SSID == "Rice Visitor" || result.SSID == "eduroam")
+                        WifiManager.calculateSignalLevel(result.level, 10);
+                    wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 10)));
                 }
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
-                wifidata.add(new WiFiData("Eduroam","3e:4r:5t:6y:7u:8i:8i",12,13));
                 adapter.notifyDataSetChanged();
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
         this.scanWiFiData();
 
         return v;
@@ -99,9 +83,7 @@ public class LocatingFragment extends Fragment {
 
     public void scanWiFiData()
     {
-
         wifi.startScan();
-
     }
 
 }
