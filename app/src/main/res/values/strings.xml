@@ -1,13 +1,45 @@
 <resources>
     <string name="app_name">IndoorLocation</string>
     <string-array name="Position_Array">
-        <item>Duncan Hall 1</item>
-        <item>Duncan Hall 2</item>
-        <item>Duncan Hall 3</item>
-        <item>Duncan Hall 4</item>
-        <item>Duncan Hall 5</item>
-        <item>Duncan Hall 6</item>
-        <item>Duncan Hall 7</item>
-        <item>Duncan Hall 8</item>
+        <item>Position_0_0</item>
+        <item>Position_0_1</item>
+        <item>Position_0_2</item>
+        <item>Position_0_3</item>
+        <item>Position_0_4</item>
+        <item>Position_0_5</item>
+        <item>Position_1_0</item>
+        <item>Position_1_1</item>
+        <item>Position_1_2</item>
+        <item>Position_1_3</item>
+        <item>Position_1_4</item>
+        <item>Position_1_5</item>
+        <item>Position_2_0</item>
+        <item>Position_2_1</item>
+        <item>Position_2_2</item>
+        <item>Position_2_3</item>
+        <item>Position_2_4</item>
+        <item>Position_2_5</item>
+        <item>Position_3_0</item>
+        <item>Position_3_1</item>
+        <item>Position_3_2</item>
+        <item>Position_3_3</item>
+        <item>Position_3_4</item>
+        <item>Position_3_5</item>
+        <item>Position_4_2</item>
+        <item>Position_4_3</item>
+        <item>Position_5_2</item>
+        <item>Position_5_3</item>
+        <item>Position_6_2</item>
+        <item>Position_6_3</item>
+        <item>Position_7_2</item>
+        <item>Position_7_3</item>
+        <item>Position_8_2</item>
+        <item>Position_8_3</item>
+        <item>Position_9_2</item>
+        <item>Position_9_3</item>
+        <item>Position_10_2</item>
+        <item>Position_10_3</item>
+        <item>Position_11_2</item>
+        <item>Position_11_3</item>
     </string-array>
 </resources>

@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -40,13 +44,16 @@ import group1.comp535.rice.indoorlocation.data.WiFiData;
  * Created by daiwei.ldw on 3/25/18.
  */
 
-public class RecordingLocationFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class RecordingLocationFragment extends Fragment implements AdapterView.OnItemSelectedListener,SensorEventListener {
 
     List<WiFiData> wifidata = new LinkedList<WiFiData>();
     private WiFiDataAdapter adapter;
     WifiManager wifi;
 
     String currentSelection;
+
+    private SensorManager sensorManager;
+    double ax,ay,az;   // these are the acceleration in x,y and z axis
 
     public static RecordingLocationFragment getInstance() {
         RecordingLocationFragment sf = new RecordingLocationFragment();
@@ -158,12 +165,6 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
             return;
         }
 
-//        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.
-//        editor.putInt(getString(R.string.saved_high_score_key), newHighScore);
-//        editor.commit();
-
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 
         LocationPoint tempPoint = new LocationPoint();
@@ -199,5 +200,19 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         Log.v("Select Item","No Item Selected");
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
+            ax=sensorEvent.values[0];
+            ay=sensorEvent.values[1];
+            az=sensorEvent.values[2];
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }

@@ -14,17 +14,32 @@ public class LocationPoint {
     HashMap<String,WiFiData> searchMap = new HashMap<>();
     String locationName;
 
+    int x;
+    int y;
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public String getLocationName() {
         return locationName;
     }
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
+
+        String positions[] = this.locationName.split("_");
+        if (positions.length == 3) {
+            x = Integer.getInteger(positions[1]);
+            y = Integer.getInteger(positions[2]);
+        }
     }
 
-
-
-    public List<WiFiData> getWifidata() {
+    public List<WiFiData> getWiFiData() {
         return wifidata;
     }
 
@@ -40,7 +55,7 @@ public class LocationPoint {
     public int calculateWiFiSignalDistance(LocationPoint wifiTestPoint){
 
         int cost = 0;
-        List<WiFiData> wifiTestData = wifiTestPoint.getWifidata();
+        List<WiFiData> wifiTestData = wifiTestPoint.getWiFiData();
         if (wifiTestData== null) {
             return -1;
         }
