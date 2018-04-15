@@ -46,7 +46,7 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor accelerometer;
-    private long lastTimestamp;
+    private long lastTimestamp = 0;
 
     private double speed_x,speed_y;   // these are the speed in x,y and z axis
     private double location_x, location_y;
@@ -54,7 +54,7 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
     private LocationPoint currentLocation = null;
     private int spaceBetweenPoints = 4;
 
-    private double last_x, last_y;
+    private double last_x = 0, last_y = 0;
 
     public static LocatingFragment getInstance() {
         LocatingFragment sf = new LocatingFragment();
@@ -174,21 +174,27 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
             double tempy=sensorEvent.values[1];
             double tempz=sensorEvent.values[2];
 
-            Log.v("Sensor Data","Motion Detected: x:"+(int)tempx+" y:"+(int)tempy+" z:"+ (int)tempz);
+            Log.v("Sensor Data","Motion Detected: x:"+tempx+" y:"+tempy+" z:"+ tempz);
 
             long currentTimestamp = sensorEvent.timestamp;
+            if (this.lastTimestamp == 0)
+                this.lastTimestamp = currentTimestamp;
+
             float timeDiff = (currentTimestamp - this.lastTimestamp)/1000000000.0f;
 
-            if ((int)tempx != this.last_x && (int)tempx != 0) {
+            if (Math.abs(tempx-this.last_x) < 0.1) {
                 double temp_speed_x = this.speed_x + tempx*timeDiff;
                 location_x += this.location_x + temp_speed_x*timeDiff;
             }
 
-            if ((int)tempy != this.last_y && (int)tempy != 0) {
+            if (Math.abs(tempy-this.last_y) < 0.1) {
                 double temp_speed_y = this.speed_y + tempy * timeDiff;
                 this.location_y += this.location_y + temp_speed_y*timeDiff;
             }
-            
+
+            this.last_x = tempx;
+            this.last_y = tempy;
+            this.lastTimestamp = currentTimestamp;
             updateLocationInformation();
         }
     }
