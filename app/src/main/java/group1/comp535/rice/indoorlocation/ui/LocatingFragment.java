@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -34,11 +38,23 @@ import group1.comp535.rice.indoorlocation.data.WiFiData;
  * Created by daiwei.ldw on 3/25/18.
  */
 
-public class LocatingFragment extends Fragment {
+public class LocatingFragment extends Fragment implements SensorEventListener {
 
     List<WiFiData> wifidata = new LinkedList<WiFiData>();
     private WiFiDataAdapter adapter;
     WifiManager wifi;
+
+    private SensorManager mSensorManager;
+    private Sensor accelerometer;
+    private long lastTimestamp;
+
+    private double speed_x,speed_y;   // these are the speed in x,y and z axis
+    private double location_x, location_y;
+
+    private LocationPoint currentLocation = null;
+    private int spaceBetweenPoints = 4;
+
+    private double last_x, last_y;
 
     public static LocatingFragment getInstance() {
         LocatingFragment sf = new LocatingFragment();
@@ -48,6 +64,11 @@ public class LocatingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get an instance to the accelerometer
+        this.mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -89,6 +110,7 @@ public class LocatingFragment extends Fragment {
                     wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 10)));
                 }
                 adapter.notifyDataSetChanged();
+                determineLocation();
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
@@ -129,10 +151,15 @@ public class LocatingFragment extends Fragment {
             }
         }
 
-        if (cloestPoint != null)
-        Toast.makeText(getContext(),"Result Found: "+ cloestPoint.getLocationName(),Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(getContext(),"No Result Found: ",Toast.LENGTH_LONG).show();
+        if (cloestPoint != null) {
+            this.currentLocation = cloestPoint;
+            Toast.makeText(getContext(), "Result Found: " + cloestPoint.getLocationName(), Toast.LENGTH_LONG).show();
+        }
+        else{
+//            Toast.makeText(getContext(),"No Result Found",Toast.LENGTH_LONG).show();
+            Log.v("Locating","No Results");
+        }
+
     }
 
     public void scanWiFiData()
@@ -140,4 +167,61 @@ public class LocatingFragment extends Fragment {
         wifi.startScan();
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor.getType()==Sensor.TYPE_LINEAR_ACCELERATION){
+            double tempx=sensorEvent.values[0];
+            double tempy=sensorEvent.values[1];
+            double tempz=sensorEvent.values[2];
+
+            Log.v("Sensor Data","Motion Detected: x:"+(int)tempx+" y:"+(int)tempy+" z:"+ (int)tempz);
+
+            long currentTimestamp = sensorEvent.timestamp;
+            float timeDiff = (currentTimestamp - this.lastTimestamp)/1000000000.0f;
+
+            if ((int)tempx != this.last_x && (int)tempx != 0) {
+                double temp_speed_x = this.speed_x + tempx*timeDiff;
+                location_x += this.location_x + temp_speed_x*timeDiff;
+            }
+
+            if ((int)tempy != this.last_y && (int)tempy != 0) {
+                double temp_speed_y = this.speed_y + tempy * timeDiff;
+                this.location_y += this.location_y + temp_speed_y*timeDiff;
+            }
+            
+            updateLocationInformation();
+        }
+    }
+
+    private void updateLocationInformation() {
+        if (this.currentLocation == null || this.currentLocation.getX() == -1 || this.currentLocation.getY() == -1){
+            return;
+        }
+
+        int new_x = this.currentLocation.getX();
+        int new_y = this.currentLocation.getY();
+
+        if (this.location_x >= this.spaceBetweenPoints){
+            int times = (int)this.location_x / this.spaceBetweenPoints;
+
+            new_x = this.currentLocation.getX() + times;
+            this.location_x = times*this.spaceBetweenPoints;
+        }
+
+        if (this.location_y >= this.spaceBetweenPoints){
+            int times = (int)this.location_y / this.spaceBetweenPoints;
+
+            new_y = this.currentLocation.getY() + times;
+            this.location_y -= times*this.spaceBetweenPoints;
+        }
+
+        String newPointName = "Position_"+new_x+"_"+new_y;
+        this.currentLocation = new LocationPoint();
+        this.currentLocation.setLocationName(newPointName);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
 }

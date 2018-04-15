@@ -14,8 +14,8 @@ public class LocationPoint {
     HashMap<String,WiFiData> searchMap = new HashMap<>();
     String locationName;
 
-    int x;
-    int y;
+    int x = -1;
+    int y = -1;
 
     public int getX() {
         return x;

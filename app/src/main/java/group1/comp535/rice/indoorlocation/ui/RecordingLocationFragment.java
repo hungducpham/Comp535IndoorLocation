@@ -44,16 +44,13 @@ import group1.comp535.rice.indoorlocation.data.WiFiData;
  * Created by daiwei.ldw on 3/25/18.
  */
 
-public class RecordingLocationFragment extends Fragment implements AdapterView.OnItemSelectedListener,SensorEventListener {
+public class RecordingLocationFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     List<WiFiData> wifidata = new LinkedList<WiFiData>();
     private WiFiDataAdapter adapter;
     WifiManager wifi;
 
     String currentSelection;
-
-    private SensorManager sensorManager;
-    double ax,ay,az;   // these are the acceleration in x,y and z axis
 
     public static RecordingLocationFragment getInstance() {
         RecordingLocationFragment sf = new RecordingLocationFragment();
@@ -200,19 +197,5 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         Log.v("Select Item","No Item Selected");
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
-            ax=sensorEvent.values[0];
-            ay=sensorEvent.values[1];
-            az=sensorEvent.values[2];
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
     }
 }
