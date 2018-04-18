@@ -144,9 +144,11 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
                 List<ScanResult> results = wifi.getScanResults();
                 Log.v("Wifi Data Size",results.size()+"");
                 for (ScanResult result : results) {
-                    if (result.SSID == "Rice Owls" || result.SSID == "Rice IoT"||result.SSID == "Rice Visitor"||result.SSID == "eduroam")
-                        WifiManager.calculateSignalLevel(result.level, 10);
-                        wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 10)));
+                    if (result.SSID.contentEquals("Rice Owls")  || result.SSID.contentEquals("Rice IoT")||result.SSID.contentEquals("Rice Visitor")||result.SSID.contentEquals("eduroam")){
+//                        WifiManager.calculateSignalLevel(result.level, 100);
+                        wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 1000)));
+                    }
+
                 }
                 adapter.notifyDataSetChanged();
             }

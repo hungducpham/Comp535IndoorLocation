@@ -34,8 +34,8 @@ public class LocationPoint {
 
         String positions[] = this.locationName.split("_");
         if (positions.length == 3) {
-            x = Integer.getInteger(positions[1]);
-            y = Integer.getInteger(positions[2]);
+            x = Integer.parseInt(positions[1]);
+            y = Integer.parseInt(positions[2]);
         }
     }
 
@@ -66,7 +66,7 @@ public class LocationPoint {
                 //calculate strength different and add to cost
                 cost += Math.abs(tempData.getStrength1()-correspondingData.getStrength1());
             }else{
-                cost += 10;
+                cost += tempData.getStrength1()/2;
             }
         }
 

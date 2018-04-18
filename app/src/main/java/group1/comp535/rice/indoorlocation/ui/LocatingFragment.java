@@ -48,11 +48,12 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
     private Sensor accelerometer;
     private long lastTimestamp = 0;
 
-    private double speed_x,speed_y;   // these are the speed in x,y and z axis
-    private double location_x, location_y;
+    private double speed_x = 0,speed_y = 0;   // these are the speed in x,y and z axis
+    private double location_x = 0, location_y = 0;
 
     private LocationPoint currentLocation = null;
-    private int spaceBetweenPoints = 4;
+    private double spaceBetweenPoints_x = 5.6;
+    private double spaceBetweenPoints_y = 3.2;
 
     private double last_x = 0, last_y = 0;
 
@@ -68,7 +69,7 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
         // Get an instance to the accelerometer
         this.mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
@@ -105,9 +106,10 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
                 List<ScanResult> results = wifi.getScanResults();
                 Log.v("Wifi Data Size",results.size()+"");
                 for (ScanResult result : results) {
-                    if (result.SSID == "Rice Owls" || result.SSID == "Rice IoT"||result.SSID == "Rice Visitor" || result.SSID == "eduroam")
-                        WifiManager.calculateSignalLevel(result.level, 10);
-                    wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 10)));
+                    if (result.SSID.contentEquals("Rice Owls")  || result.SSID.contentEquals("Rice IoT")||result.SSID.contentEquals("Rice Visitor")||result.SSID.contentEquals("eduroam")){
+//                        WifiManager.calculateSignalLevel(result.level, 100);
+                        wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 1000)));
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 determineLocation();
@@ -124,11 +126,14 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         Set<String> nameList = sharedPref.getStringSet("namelist",new HashSet<String>());
 
+//        Log.v("Shared Preference Data", nameList.toString());
+
         List<LocationPoint> locations = new ArrayList<>();
         Gson gson = new Gson();
 
         for (String tempName:nameList) {
             String tempData = sharedPref.getString(tempName,"");
+//            Log.v("Shared Preference Data",tempData);
             if (tempData.length()!= 0){
                 LocationPoint obj = gson.fromJson(tempData, LocationPoint.class);
                 locations.add(obj);
@@ -137,23 +142,23 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
 
         // calculate cost, choose the lowest one
         int cost = Integer.MAX_VALUE;
-        LocationPoint cloestPoint = null;
-
+        LocationPoint closetPoint = null;
 
         LocationPoint currentInfo = new LocationPoint();
         currentInfo.setWifidata(this.wifidata);
 
         for (LocationPoint tempPoint:locations) {
-            int temp_value = tempPoint.calculateWiFiSignalDistance(currentInfo);
-            if (temp_value > 0 || cost > temp_value){
-                cost = temp_value;
-                cloestPoint = tempPoint;
+            int new_cost = tempPoint.calculateWiFiSignalDistance(currentInfo);
+//            Log.v("Location Cost","Location Name: "+tempPoint.getLocationName()+" Cost: "+new_cost);
+            if (new_cost > 0 && new_cost < cost ){
+                cost = new_cost;
+                closetPoint = tempPoint;
             }
         }
 
-        if (cloestPoint != null) {
-            this.currentLocation = cloestPoint;
-            Toast.makeText(getContext(), "Result Found: " + cloestPoint.getLocationName(), Toast.LENGTH_LONG).show();
+        if (closetPoint != null) {
+            this.currentLocation = closetPoint;
+            Toast.makeText(getContext(), "Result Found: " + closetPoint.getLocationName(), Toast.LENGTH_LONG).show();
         }
         else{
 //            Toast.makeText(getContext(),"No Result Found",Toast.LENGTH_LONG).show();
@@ -174,28 +179,26 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
             double tempy=sensorEvent.values[1];
             double tempz=sensorEvent.values[2];
 
-            Log.v("Sensor Data","Motion Detected: x:"+tempx+" y:"+tempy+" z:"+ tempz);
+            Log.v("SensorData","Motion Detected: x:"+tempx+" y:"+tempy+" z:"+ tempz);
 
             long currentTimestamp = sensorEvent.timestamp;
             if (this.lastTimestamp == 0)
                 this.lastTimestamp = currentTimestamp;
 
-            float timeDiff = (currentTimestamp - this.lastTimestamp)/1000000000.0f;
+            float timeDiff = (currentTimestamp - this.lastTimestamp) / 1000000000.0f;
 
-            if (Math.abs(tempx-this.last_x) < 0.1) {
-                double temp_speed_x = this.speed_x + tempx*timeDiff;
-                location_x += this.location_x + temp_speed_x*timeDiff;
-            }
+            this.speed_x += tempx*timeDiff;
 
-            if (Math.abs(tempy-this.last_y) < 0.1) {
-                double temp_speed_y = this.speed_y + tempy * timeDiff;
-                this.location_y += this.location_y + temp_speed_y*timeDiff;
-            }
+            this.speed_y += tempy * timeDiff;
 
-            this.last_x = tempx;
-            this.last_y = tempy;
+            this.location_x += this.speed_x * timeDiff;
+            this.location_y += this.speed_y * timeDiff;
+
             this.lastTimestamp = currentTimestamp;
-            updateLocationInformation();
+
+            Log.v("SensorSpeed","New Speed: x "+this.speed_x+" y "+this.speed_y);
+            Log.v("SensorLocation","New Location: x "+this.location_x+" y "+this.location_y);
+//            updateLocationInformation();
         }
     }
 
@@ -207,18 +210,18 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
         int new_x = this.currentLocation.getX();
         int new_y = this.currentLocation.getY();
 
-        if (this.location_x >= this.spaceBetweenPoints){
-            int times = (int)this.location_x / this.spaceBetweenPoints;
+        if (this.location_x >= this.spaceBetweenPoints_x){
+            int times = (int)(this.location_x / this.spaceBetweenPoints_x);
 
             new_x = this.currentLocation.getX() + times;
-            this.location_x = times*this.spaceBetweenPoints;
+            this.location_x = times*this.spaceBetweenPoints_x;
         }
 
-        if (this.location_y >= this.spaceBetweenPoints){
-            int times = (int)this.location_y / this.spaceBetweenPoints;
+        if (this.location_y >= this.spaceBetweenPoints_y){
+            int times = (int)(this.location_y / this.spaceBetweenPoints_y);
 
             new_y = this.currentLocation.getY() + times;
-            this.location_y -= times*this.spaceBetweenPoints;
+            this.location_y -= times*this.spaceBetweenPoints_y;
         }
 
         String newPointName = "Position_"+new_x+"_"+new_y;
