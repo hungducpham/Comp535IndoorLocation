@@ -15,8 +15,8 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 
 import java.util.ArrayList;
 
-import group1.comp535.rice.indoorlocation.ui.LocatingFragment;
-import group1.comp535.rice.indoorlocation.ui.RecordingLocationFragment;
+
+import group1.comp535.rice.indoorlocation.ui.*;
 import group1.comp535.rice.indoorlocation.utils.ViewFindUtils;
 
 public class MainActivity extends AppCompatActivity implements OnTabSelectListener {
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectListen
     private Context mContext = this;
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private final String[] mTitles = {
-            "Record Location", "Locating"
+            "Record Location", "Locating","Record sensor"
     };
     private MyPagerAdapter mAdapter;
 
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectListen
 
         mFragments.add(RecordingLocationFragment.getInstance());
         mFragments.add(LocatingFragment.getInstance());
-
+        mFragments.add(RecordingSensorEventFragment.getInstance());
         View decorView = getWindow().getDecorView();
         ViewPager vp = ViewFindUtils.find(decorView, R.id.vp);
         mAdapter = new MyPagerAdapter(getSupportFragmentManager());

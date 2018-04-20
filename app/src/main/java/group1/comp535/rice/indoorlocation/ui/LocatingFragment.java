@@ -179,7 +179,7 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
             double tempy=sensorEvent.values[1];
             double tempz=sensorEvent.values[2];
 
-            Log.v("SensorData","Motion Detected: x:"+tempx+" y:"+tempy+" z:"+ tempz);
+            //Log.v("SensorData","Motion Detected: x:"+tempx+" y:"+tempy+" z:"+ tempz);
 
             long currentTimestamp = sensorEvent.timestamp;
             if (this.lastTimestamp == 0)
@@ -196,9 +196,18 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
 
             this.lastTimestamp = currentTimestamp;
 
-            Log.v("SensorSpeed","New Speed: x "+this.speed_x+" y "+this.speed_y);
-            Log.v("SensorLocation","New Location: x "+this.location_x+" y "+this.location_y);
+            //Log.v("SensorSpeed","New Speed: x "+this.speed_x+" y "+this.speed_y);
+            //Log.v("SensorLocation","New Location: x "+this.location_x+" y "+this.location_y);
 //            updateLocationInformation();
+        }
+        //gyroscope
+        if (sensorEvent.sensor.getType()==Sensor.TYPE_GYROSCOPE) {
+            double rotateX = sensorEvent.values[0];
+            double rotateY = sensorEvent.values[0];
+            double rotateZ = sensorEvent.values[0];
+
+            //Log.v("SensorRotation","X: "+rotateX+" Y: "+rotateY);
+            //Log.v("SensorLocation","New Location: x "+this.location_x+" y "+this.location_y);
         }
     }
 
