@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -33,6 +34,8 @@ import group1.comp535.rice.indoorlocation.R;
 import group1.comp535.rice.indoorlocation.adapter.WiFiDataAdapter;
 import group1.comp535.rice.indoorlocation.data.LocationPoint;
 import group1.comp535.rice.indoorlocation.data.WiFiData;
+
+import static java.util.Collections.min;
 
 /**
  * Created by daiwei.ldw on 3/25/18.
@@ -69,7 +72,7 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
         // Get an instance to the accelerometer
         this.mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+//        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
                 for (ScanResult result : results) {
                     if (result.SSID.contentEquals("Rice Owls")  || result.SSID.contentEquals("Rice IoT")||result.SSID.contentEquals("Rice Visitor")||result.SSID.contentEquals("eduroam")){
 //                        WifiManager.calculateSignalLevel(result.level, 100);
-                        wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 1000)));
+                        wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 100)));
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -147,18 +150,98 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
         LocationPoint currentInfo = new LocationPoint();
         currentInfo.setWifidata(this.wifidata);
 
+        List<LocationPoint> knnPoints = new ArrayList();
+        List<Integer> knnDistance = new ArrayList<>();
+
+        int knnSize = 3;
+
         for (LocationPoint tempPoint:locations) {
             int new_cost = tempPoint.calculateWiFiSignalDistance(currentInfo);
 //            Log.v("Location Cost","Location Name: "+tempPoint.getLocationName()+" Cost: "+new_cost);
-            if (new_cost > 0 && new_cost < cost ){
-                cost = new_cost;
-                closetPoint = tempPoint;
+
+            if (new_cost > 0  ){
+                if (knnDistance.size() <= knnSize){
+                    knnDistance.add(new_cost);
+                    knnPoints.add(tempPoint);
+                }else if (min(knnDistance)>new_cost){
+                    int index = knnDistance.indexOf(min(knnDistance));
+                    knnDistance.remove(index);
+                    knnPoints.remove(index);
+
+                    knnDistance.add(new_cost);
+                    knnPoints.add(tempPoint);
+                }
             }
         }
 
-        if (closetPoint != null) {
-            this.currentLocation = closetPoint;
-            Toast.makeText(getContext(), "Result Found: " + closetPoint.getLocationName(), Toast.LENGTH_LONG).show();
+        double x = 0, y = 0;
+        double distance_under = 0;
+        for (int i = 0; i < knnDistance.size();i++){
+            x += ((double)knnPoints.get(i).getX())/knnDistance.get(i);
+            y += ((double)knnPoints.get(i).getY())/knnDistance.get(i);
+
+            distance_under += ((double)1)/((double)knnDistance.get(i));
+        }
+
+        x = x/distance_under;
+        y = y/distance_under;
+
+        if (knnPoints.size()!=0) {
+
+            Log.v("locating",x+"");
+            Log.v("locating",y+"");
+            Log.v("locating",distance_under+"");
+
+            Log.v("Locating", knnDistance.get(0) +"");
+
+            // Cloest point analysis
+            int index = knnDistance.indexOf(min(knnDistance));
+            this.currentLocation = knnPoints.get(index);
+            knnPoints.remove(index);
+
+            double diff_x = 0, diff_y = 0;
+            if (knnPoints.size() == 2)
+            {
+                // Triangle Analysis
+                int diff1_x = knnPoints.get(0).getX()-this.currentLocation.getX();
+                int diff1_y = knnPoints.get(0).getY()-this.currentLocation.getY();
+                int diff2_x = knnPoints.get(1).getX()-this.currentLocation.getX();
+                int diff2_y = knnPoints.get(1).getY()-this.currentLocation.getY();
+
+                // determine if it is triangle in the same block
+                if (Math.abs(diff1_x) <= 1 && Math.abs(diff1_y) <= 1 && Math.abs(diff2_x) <= 1 && Math.abs(diff2_y) <= 1) {
+                    if (diff1_x * diff2_x >= 0 && diff1_y * diff2_y >= 0) {
+                        // same block and in triangle
+                        if ((Math.abs(diff1_x) + Math.abs(diff2_x) + Math.abs(diff2_y)+ Math.abs(diff1_y) == 3 )) {
+                            if (Math.abs(diff1_x) + Math.abs(diff2_x) == 2) {
+                                diff_x = 0.125;
+                                diff_y = 0.375;
+                            }else{
+                                diff_x = 0.375;
+                                diff_y = 0.125;
+                            }
+                        }else if ((Math.abs(diff1_x) + Math.abs(diff2_x) + Math.abs(diff2_y)+ Math.abs(diff1_y) == 2 )){
+                            diff_x = 0.25;
+                            diff_y = 0.25;
+                        }
+
+                        if (diff1_x <0 || diff2_x < 0) {
+                            diff_x = diff_x * -1;
+                        }
+
+                        if (diff1_y <0 || diff2_y < 0) {
+                            diff_y = diff_y * -1;
+                        }
+                    }
+                }
+            }
+
+
+
+//            this.currentLocation = closetPoint;
+            DecimalFormat df = new DecimalFormat();
+            df.setMaximumFractionDigits(2);
+            Toast.makeText(getContext(), "Result Found: x:" + df.format(x)+" y: "+df.format(y) + " closest = "+this.currentLocation.getLocationName() + "Traingle Analysis x: "+ df.format(this.currentLocation.getX()+diff_x)+" y: "+df.format(this.currentLocation.getY()+diff_y) , Toast.LENGTH_LONG).show();
         }
         else{
 //            Toast.makeText(getContext(),"No Result Found",Toast.LENGTH_LONG).show();

@@ -62,12 +62,14 @@ public class LocationPoint {
 
         for (WiFiData tempData: this.wifidata) {
             WiFiData correspondingData = wifiTestPoint.searchForWiFiData(tempData);
+            int tempValue =0;
             if (correspondingData!= null) {
                 //calculate strength different and add to cost
-                cost += Math.abs(tempData.getStrength1()-correspondingData.getStrength1());
+                tempValue = Math.abs(tempData.getStrength1()-correspondingData.getStrength1());
             }else{
-                cost += tempData.getStrength1()/2;
+                tempValue = tempData.getStrength1()/2;
             }
+            cost += tempValue* tempValue;
         }
 
         return cost;

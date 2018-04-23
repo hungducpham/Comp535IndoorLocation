@@ -146,7 +146,7 @@ public class RecordingLocationFragment extends Fragment implements AdapterView.O
                 for (ScanResult result : results) {
                     if (result.SSID.contentEquals("Rice Owls")  || result.SSID.contentEquals("Rice IoT")||result.SSID.contentEquals("Rice Visitor")||result.SSID.contentEquals("eduroam")){
 //                        WifiManager.calculateSignalLevel(result.level, 100);
-                        wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 1000)));
+                        wifidata.add(new WiFiData(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 100)));
                     }
 
                 }
