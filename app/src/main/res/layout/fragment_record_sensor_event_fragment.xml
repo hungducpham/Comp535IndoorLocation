@@ -43,27 +43,38 @@
         android:text="reset all data" />
 
     <EditText
-        android:id="@+id/textX"
+        android:id="@+id/txtX"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/txtY"
+        android:layout_marginStart="51dp"
         android:ems="10"
         android:inputType="numberDecimal"
         android:visibility="invisible"
         tools:text="Enter X coordinate in meter" />
 
     <EditText
-        android:id="@+id/textY"
-        android:layout_width="138dp"
+        android:id="@+id/txtY"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="31dp"
         android:layout_marginTop="120dp"
         android:ems="10"
         android:inputType="numberDecimal"
         android:visibility="invisible"
         tools:text="Enter Y coordinate in meter" />
+
+    <Button
+        android:id="@+id/stopRecording"
+        android:layout_width="179dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57dp"
+        android:text="Stop recording"
+        android:visibility="invisible" />
 
 </RelativeLayout>

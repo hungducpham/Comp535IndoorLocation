@@ -9,20 +9,30 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.TriggerEventListener;
+import android.hardware.TriggerEvent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,6 +44,7 @@ import group1.comp535.rice.indoorlocation.R;
 import group1.comp535.rice.indoorlocation.adapter.WiFiDataAdapter;
 import group1.comp535.rice.indoorlocation.data.LocationPoint;
 import group1.comp535.rice.indoorlocation.data.WiFiData;
+import group1.comp535.rice.indoorlocation.utils.NeuralNetwork;
 
 import static java.util.Collections.min;
 
@@ -48,7 +59,10 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
     WifiManager wifi;
 
     private SensorManager mSensorManager;
+    private TriggerEventListener mListener;
     private Sensor accelerometer;
+    private Sensor gyroscope;
+    private Sensor significantMotion;
     private long lastTimestamp = 0;
 
     private double speed_x = 0,speed_y = 0;   // these are the speed in x,y and z axis
@@ -58,7 +72,27 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
     private double spaceBetweenPoints_x = 5.6;
     private double spaceBetweenPoints_y = 3.2;
 
+    private NeuralNetwork nn_model;
+    private boolean moving;
+    private boolean stopping;
+    private ArrayList<Double> sensorData;
+    private LocationPoint lastRecordedLocation;
+    private boolean recordingSensorData = false;
+    private boolean recording;
+    private ArrayList<Double> sensorDataRecorded;
+    private Button recordButton;
+    private Button stopButton;
+    private Button discardButton;
+    private Button saveButton;
+    private Button resetButton;
+    private EditText textX;
+    private EditText textY;
     private double last_x = 0, last_y = 0;
+    private double currentTimeInMillis;
+    private double lastMovedDistance;
+    
+
+    private int mode = 1;
 
     public static LocatingFragment getInstance() {
         LocatingFragment sf = new LocatingFragment();
@@ -69,23 +103,80 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get an instance to the accelerometer
-        this.mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
-        this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-//        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Get an instance to the accelerometer,
+        this.mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
 
+        this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        this.gyroscope = this.mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI, 250);
+        mSensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_UI,250);
+
+        /**this.significantMotion = this.mSensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION);
+         TriggerEventListener mTriggerEventListener = new TriggerEventListener() {
+        @Override
+        public void onTrigger(TriggerEvent event) {
+        Toast.makeText(getContext(), "moving", Toast.LENGTH_LONG).show();
+        Log.v("moving", "moving");
+        moving= true;
+        sensorData = new ArrayList<Double>();
+        }
+        };
+         mSensorManager.requestTriggerSensor(mTriggerEventListener, this.significantMotion);
+         **/
+        this.nn_model = new NeuralNetwork();
+        this.nn_model.importFromFile(this.mode);
+        this.sensorData = new ArrayList<Double>();
+        //Log.v("", "Done loading neural network");
         View v = inflater.inflate(R.layout.locating_fragment, null);
         ListView listView = (ListView) v.findViewById(R.id.record_data);
         Button locatingButton = v.findViewById(R.id.locating);
+        recordButton = v.findViewById(R.id.record);
+        saveButton = v.findViewById(R.id.save);
+        discardButton = v.findViewById(R.id.discard);
+        resetButton = v.findViewById(R.id.reset);
+        stopButton = v.findViewById(R.id.stop);
+        textX = v.findViewById(R.id.txtX);
+        textY = v.findViewById(R.id.txtY);
 
         locatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 determineLocation();
+            }
+        });
+        recordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recordButtonClicked();
+            }
+        });
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveButtonClicked();
+            }
+        });
+        discardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                discardButtonClicked();
+            }
+        });
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetButtonClicked();
+            }
+        });
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopButtonClicked();
             }
         });
 
@@ -104,7 +195,6 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
             @Override
             public void onReceive(Context c, Intent intent)
             {
-
                 wifidata.clear();
                 List<ScanResult> results = wifi.getScanResults();
                 Log.v("Wifi Data Size",results.size()+"");
@@ -118,7 +208,7 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
                 determineLocation();
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-
+        this.currentTimeInMillis = System.currentTimeMillis();
         this.scanWiFiData();
 
         return v;
@@ -257,41 +347,90 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.sensor.getType()==Sensor.TYPE_LINEAR_ACCELERATION){
-            double tempx=sensorEvent.values[0];
-            double tempy=sensorEvent.values[1];
-            double tempz=sensorEvent.values[2];
+        if(recordingSensorData) //mode enables recording of sensor data for training
+        {
+            if (recording) {
+                if (sensorEvent.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+                    double accX = sensorEvent.values[0];
+                    double accY = sensorEvent.values[1];
+                    double accZ = sensorEvent.values[2];
 
-            //Log.v("SensorData","Motion Detected: x:"+tempx+" y:"+tempy+" z:"+ tempz);
-
-            long currentTimestamp = sensorEvent.timestamp;
-            if (this.lastTimestamp == 0)
-                this.lastTimestamp = currentTimestamp;
-
-            float timeDiff = (currentTimestamp - this.lastTimestamp) / 1000000000.0f;
-
-            this.speed_x += tempx*timeDiff;
-
-            this.speed_y += tempy * timeDiff;
-
-            this.location_x += this.speed_x * timeDiff;
-            this.location_y += this.speed_y * timeDiff;
-
-            this.lastTimestamp = currentTimestamp;
-
-            //Log.v("SensorSpeed","New Speed: x "+this.speed_x+" y "+this.speed_y);
-            //Log.v("SensorLocation","New Location: x "+this.location_x+" y "+this.location_y);
-//            updateLocationInformation();
+                    sensorDataRecorded.add(accX);
+                    sensorDataRecorded.add(accY);
+                    //sensorDataRecorded.add(accZ);
+                }
+                if (sensorEvent.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                    double rotateX = sensorEvent.values[0];
+                    double rotateY = sensorEvent.values[0];
+                    double rotateZ = sensorEvent.values[0];
+                    sensorDataRecorded.add(rotateX);
+                    sensorDataRecorded.add(rotateY);
+                    //sensorDataRecorded.add(rotateZ);
+                }
+            }
         }
-        //gyroscope
-        if (sensorEvent.sensor.getType()==Sensor.TYPE_GYROSCOPE) {
-            double rotateX = sensorEvent.values[0];
-            double rotateY = sensorEvent.values[0];
-            double rotateZ = sensorEvent.values[0];
 
-            //Log.v("SensorRotation","X: "+rotateX+" Y: "+rotateY);
-            //Log.v("SensorLocation","New Location: x "+this.location_x+" y "+this.location_y);
-        }
+        else
+            {
+                double currentTime = System.currentTimeMillis();
+
+
+                if (sensorEvent.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+                    double accX = sensorEvent.values[0];
+                    double accY = sensorEvent.values[1];
+                    //double accZ = sensorEvent.values[2];
+
+                    sensorData.add(accX);
+                    sensorData.add(accY);
+                    //sensorData.add(accZ);
+
+                }
+                //gyroscope
+                if (sensorEvent.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                    double rotateX = sensorEvent.values[0];
+                    double rotateY = sensorEvent.values[0];
+                    //double rotateZ = sensorEvent.values[0];
+                    sensorData.add(rotateX);
+                    sensorData.add(rotateY);
+                    //sensorData.add(rotateZ);
+
+                }
+
+                if (currentTime - this.currentTimeInMillis >= 3000) //interval of calculating imu distance ~ 2 sec
+                {
+                    currentTimeInMillis = currentTime;
+                    Double[] input1 = new Double[0];
+                    input1 = sensorData.toArray(input1);
+                    sensorData = new ArrayList<Double>();
+                    double[] input = new double[input1.length];
+                    for (int i = 1; i < input1.length; i++) {
+                        input[i] = input1[i].doubleValue();
+                    }
+
+                    double[] output = this.nn_model.feedForward(input);
+                    double distance = Math.sqrt((output[0]*output[0])   + (output[1]*output[1]));
+                    if (distance < 0.5) moving = false;
+                    else {
+                        if(!moving) {
+                            moving = true;
+                            lastMovedDistance = distance;
+                            Toast.makeText(getContext(), "Movement detected: ", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            moving = false;
+                            lastMovedDistance = 0;
+                            Toast.makeText(getContext(), "Stopping detected: ", Toast.LENGTH_LONG).show();
+                            
+                        }
+                    }
+                    
+                }
+                if(moving) {
+                    wifi.startScan();
+                    determineLocation();
+                }
+            }
+
     }
 
     private void updateLocationInformation() {
@@ -324,5 +463,86 @@ public class LocatingFragment extends Fragment implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    private void recordButtonClicked() {
+        if (recordingSensorData) {
+            recording = true;
+            sensorDataRecorded = new ArrayList<Double> ();
+            recordButton.setVisibility(View.INVISIBLE);
+            stopButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void saveButtonClicked() {
+
+        if (recordingSensorData) {
+            double X = Double.parseDouble(textX.getText().toString());
+            double Y = Double.parseDouble(textY.getText().toString());
+            this.writeSensorData(convertToString(sensorDataRecorded), X * 3.542 * 0.3048, Y * 4 * 0.3048);
+            saveButton.setVisibility(View.INVISIBLE);
+            textX.setVisibility(View.INVISIBLE);
+            textY.setVisibility(View.INVISIBLE);
+            recordButton.setVisibility(View.VISIBLE);
+            Toast.makeText(getContext(), "Length of recorded data is " + sensorDataRecorded.size(),Toast.LENGTH_LONG ).show();
+
+        }
+    }
+    private void discardButtonClicked() {
+        discardButton.setVisibility(View.INVISIBLE);
+        recordButton.setVisibility(View.VISIBLE);
+        textX.setVisibility(View.INVISIBLE);
+        textY.setVisibility(View.INVISIBLE);
+        saveButton.setVisibility(View.INVISIBLE);
+
+    }
+    private void resetButtonClicked() {
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS), "sensor_data.txt");
+        file.delete();
+        Toast.makeText(getContext(),"sensor data reset", Toast.LENGTH_LONG).show();
+    }
+    private void stopButtonClicked() {
+        if(recordingSensorData) {
+            recording = false;
+            stopButton.setVisibility(View.INVISIBLE);
+            saveButton.setVisibility(View.VISIBLE);
+            textX.setVisibility(View.VISIBLE);
+            textY.setVisibility(View.VISIBLE);
+            discardButton.setVisibility(View.VISIBLE);
+            //Log.v("Debug", "Length of recorded data is " + sensorDataRecorded.size());
+        }
+    }
+
+
+    private String convertToString(ArrayList<Double> a) {
+        Double[] input = new Double[1];
+        input = a.toArray( input);
+        String output = "";
+        for (Double i: input) {
+            output += i.toString()+ " ";
+        }
+        return output;
+
+    }
+
+    private void writeSensorData(String data, double X, double Y) {
+        try {
+            File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), "sensor_data.txt");
+            if (!file.exists()) Log.v("debug","File doesn't exist");
+            FileOutputStream fOut = new FileOutputStream(file,true);
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            BufferedWriter myBufferedWriter = new BufferedWriter(myOutWriter);
+            myBufferedWriter.append(data);
+            myBufferedWriter.append("\n");
+            myBufferedWriter.append("" + X + " " + Y);
+            myBufferedWriter.append("\n");
+            myBufferedWriter.close();
+            fOut.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 }
