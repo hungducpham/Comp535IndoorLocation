@@ -12,9 +12,13 @@
         android:background="@color/colorPureWhite">
 
         <Button
-            android:id="@+id/stop"
+            android:id="@+id/finish"
             android:layout_width="123dp"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/start"
+            android:layout_marginTop="51dp"
+            android:layout_marginEnd="102dp"
+            android:layout_toStartOf="@+id/reset"
             android:text="StopRecording"
             android:visibility="invisible" />
 
@@ -22,8 +26,13 @@
             android:id="@+id/record"
             android:layout_width="124dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginBottom="0dp"
             android:enabled="true"
-            android:text="Record Sensor Data" />
+            android:text="Record Sensor Data"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/locating"
@@ -32,7 +41,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:enabled="true"
-            android:text="Determine Location" />
+            android:text="Current Location" />
 
         <Button
             android:id="@+id/save"
@@ -48,7 +57,8 @@
             android:id="@+id/discard"
             android:layout_width="136dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignBottom="@+id/txtX"
+            android:layout_marginStart="28dp"
             android:layout_toEndOf="@+id/txtY"
             android:text="Discard data"
             android:visibility="invisible" />
@@ -74,13 +84,35 @@
 
         <EditText
             android:id="@+id/txtY"
-            android:layout_width="124dp"
+            android:layout_width="113dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/stop"
+            android:layout_above="@+id/finish"
+            android:layout_marginStart="3dp"
+            android:layout_marginBottom="-46dp"
+            android:layout_toEndOf="@+id/txtX"
             android:contentDescription="Enter Y"
             android:ems="10"
             android:inputType="numberDecimal|numberSigned"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/start"
+            android:layout_width="117dp"
+            android:layout_height="58dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/discard_wifi"
+            android:text="Start measuring"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="117dp"
+            android:layout_height="58dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="104dp"
+            android:text="Stop Measuring"
             android:visibility="invisible" />
 
     </RelativeLayout>
@@ -94,14 +126,13 @@
         >
 
         <ListView
+            android:id="@+id/recorded_data"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/record_data"
-            android:fillViewport="true"
-            android:paddingLeft="10dp"
             android:divider="#00000000"
             android:dividerHeight="10dp"
-            />
+            android:fillViewport="true"
+            android:paddingLeft="10dp" />
 
     </LinearLayout>
 

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPureWhite"
+        android:orientation="vertical">
+
+        <!--<EditText-->
+        <!--android:id="@+id/curentLocationTag"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:ems="10"-->
+        <!--android:inputType="textPersonName"-->
+        <!--android:hint="Current Location Tag"/>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/record_wifi"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="371dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:enabled="true"
+                android:text="Record Location" />
+
+            <Button
+                android:id="@+id/start_measure_wifi"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:enabled="true"
+                android:text="start measure" />
+
+            <Button
+                android:id="@+id/stop_measure_wifi"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="Stop measure"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/discard_wifi"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="266dp"
+                android:layout_height="48dp"
+                android:layout_weight="0.5"
+                android:text="Discard"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/save_wifi"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="256dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="Save"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/coordX"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:ems="10"
+                android:inputType="numberSigned|numberDecimal"
+                android:visibility="invisible" />
+
+            <EditText
+                android:id="@+id/coordY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:ems="10"
+                android:inputType="numberSigned|numberDecimal"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/reset_wifi"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_weight="0.5"
+                android:text="reset all" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGrayBackground"
+        android:fillViewport="true"
+        >
+
+        <ListView
+            android:id="@+id/recorded_wifi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#00000000"
+            android:dividerHeight="10dp"
+            android:fillViewport="true"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

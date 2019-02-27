@@ -10,18 +10,18 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class NeuralNetwork {
-    private int nn_input_dim;
-    private int nn_hidden_dim;
-    private int nn_hidden_layer;
-    private int nn_output_dim;
-    private String nn_actFun_type;
+    int nn_input_dim;
+    int nn_hidden_dim;
+    int nn_hidden_layer;
+    int nn_output_dim;
+    String nn_actFun_type;
 
-    private double[][] WIn;
-    private double[][] b1;
-    private double[][][] WHidden;
-    private double[][] bHidden;
-    private double[][] WOut;
-    private double[][] b2;
+    double[][] WIn;
+    double[][] b1;
+    double[][][] WHidden;
+    double[][] bHidden;
+    double[][] WOut;
+    double[][] b2;
 
     public NeuralNetwork() {
 
@@ -76,7 +76,7 @@ public class NeuralNetwork {
         }
     }
 
-    public double[][] importArrayFromFile(int dimension1, int dimension2, String fileName) {
+    double[][] importArrayFromFile(int dimension1, int dimension2, String fileName) {
         double[][] result = new double[dimension1][dimension2];
         try {
             File file = new File(Environment.getExternalStoragePublicDirectory(

@@ -39,9 +39,8 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectListen
 
         this.getSupportActionBar().setElevation((float) 0.0);
 
-        mFragments.add(RecordingLocationFragment.getInstance());
-        mFragments.add(LocatingFragment.getInstance());
-        mFragments.add(RecordingSensorEventFragment.getInstance());
+        mFragments.add(WiFiLocationFragment.getInstance());
+        mFragments.add(CombinedLocatingFragment.getInstance());
         View decorView = getWindow().getDecorView();
         ViewPager vp = ViewFindUtils.find(decorView, R.id.vp);
         mAdapter = new MyPagerAdapter(getSupportFragmentManager());
