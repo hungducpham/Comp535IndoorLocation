@@ -46,6 +46,7 @@ import group1.comp535.rice.indoorlocation.adapter.WiFiDataAdapter;
 import group1.comp535.rice.indoorlocation.data.LocationPoint;
 import group1.comp535.rice.indoorlocation.data.WiFiData;
 import group1.comp535.rice.indoorlocation.utils.ClassificationNeuralNetwork;
+import group1.comp535.rice.indoorlocation.utils.LinearSVC;
 import group1.comp535.rice.indoorlocation.utils.NeuralNetwork;
 import group1.comp535.rice.indoorlocation.utils.OtherUtils;
 import group1.comp535.rice.indoorlocation.utils.ButterworthFilter;
@@ -61,6 +62,18 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
      * mode = 2: using both WiFi and sensor data to determine location
      * mode = 3: only recording sensor data for training
      */
+    private int currentHeading = 0;
+    private ArrayList<Double> pathLengths = new ArrayList<>();
+    private ArrayList<Integer> pathHeadings  = new ArrayList<>();
+    private ArrayList<double[]> positionBeforeTurn = new ArrayList<>();
+    private final double step_length_variance = 0.03;
+    private final double turning_variance = 0.05;
+    private double current_heading_variance = 0;
+    private double current_path_variance = 0;
+    private ArrayList<double[][]> position_covariance_matrices_before_turn = new ArrayList<>();
+    private double[][] current_position_covariance_matrix = new double[2][2];
+
+
     private int mode = 3;
     private String[] mode_name = {"using only WiFi","using both WiFi and sensor data", "only using sensor data" };
     private final int WIFIMODE_1NN = 1;
@@ -69,7 +82,7 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
     private int frame_time = 20;
     private double acc_filter_threshold = 0.5;
     private double gyro_filter_threshold = 0.5;
-    private double turning_buffer_sum_threshold = 2;
+    private double turning_buffer_sum_threshold = 5;
     private int recordingSensorMode = 1;  // sensor mode: 0 = accelerator (distance measuring); 1 = gyroscope (turning measuring)
     private int nn_mode = 1; //neural network mode: 1 = distance + heading; 2 = X,Y; 3 = RNN
     private int distance_mode = 1;
@@ -93,6 +106,7 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
 
     private NeuralNetwork distanceNN;
     private ClassificationNeuralNetwork turningNN;
+    private LinearSVC turning_model_SVC;
     private boolean possible_turn = false;
 
 
@@ -133,7 +147,7 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
     private long lastTurningCheckTime = 0;
 
 
-    private int currentHeading = 0;
+
     private boolean updatingLocation = false;
     private Intent batteryStatus ;
 
@@ -184,8 +198,17 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
         this.lastRecordedTimeInMillis = System.currentTimeMillis();
         this.distanceNN = new NeuralNetwork();
         this.distanceNN.importFromFile(this.nn_mode);
+        /*
         this.turningNN = new ClassificationNeuralNetwork();
         turningNN.importFromFile(4);       //suppose that mode # 4 is for turning neural network
+        */
+        this.turning_model_SVC = new LinearSVC();
+        this.turning_model_SVC.reconstruct_from_file();
+        this.pathHeadings.add(currentHeading);
+        double[] t = new double[2]; t[0] = 0.0; t[1] = 0.0;
+        this.positionBeforeTurn.add(t);
+        double[][] t2 = new double[2][2];
+        this.position_covariance_matrices_before_turn.add(t2);
 
         View v = inflater.inflate(R.layout.locating_fragment, null);
         ListView listView = (ListView) v.findViewById(R.id.recorded_data);
@@ -199,6 +222,7 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
         stopButton = v.findViewById(R.id.stop);
         textX = v.findViewById(R.id.txtX);
         textY = v.findViewById(R.id.txtY);
+
 
         locateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -877,8 +901,8 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
                     if( possible_turn && currentTimeMillis - lastTurningCheckTime >= 2000) //we assume that the turn can only happen in 1.5 second maximum
                     {
                         double[] lastTurningData = OtherUtils.convertArrayListToArray(turningDataRecorded);
-                        int lastTurn = turningNN.predict(lastTurningData);
-                        currentHeading = (currentHeading + lastTurn)%8;
+                        int lastTurn = estimateTurning(lastTurningData);
+                        perform_turn(lastTurn);
                         toastShow("turning detected, type: " + lastTurn + ", current heading: " + currentHeading, 0);
                         //refresh the turning data
 
@@ -912,9 +936,20 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
      * estimate the turning category from the last 1.5 second of gyroscope data
      * @return
      */
-    private int estimateLastTurning() {
+    private int estimateTurning(double[] turningData) {
 
-        return 0;
+        int result = turning_model_SVC.predict(get_features_array(turningData));
+        return result;
+    }
+    private double[] get_features_array(double[] turningData) {
+        double[] result = new double[6];
+        result[0] = OtherUtils.sum(turningData);
+        result[1] = OtherUtils.maximum(turningData);
+        result[2] = OtherUtils.minimum(turningData);
+        result[3] = result[0]/turningData.length;
+        result[4] = OtherUtils.sum(OtherUtils.abs(turningData));
+        result[5] = OtherUtils.var(turningData);
+        return result;
     }
 
 
@@ -1071,12 +1106,75 @@ public class CombinedLocatingFragment extends Fragment implements SensorEventLis
 
             //if updating location then update our current location
             if (updatingLocation) {
-                currentLocation.move(step_length, currentHeading);
+                perform_step(step_length);
+
             }
             return 1;
         }
         current_slope = next_current_slope;
         return 0;
+
+    }
+
+    void perform_step(double step_length) {
+        currentLocation.move(step_length, currentHeading);
+        if (pathLengths.size() == 0) {
+            pathLengths.add(step_length);
+            current_path_variance = step_length_variance;
+        }
+        else{
+            double old_path_length = pathLengths.remove(pathLengths.size() -1);
+            double new_path_length = old_path_length + step_length;
+            pathLengths.add(new_path_length);
+            current_path_variance = current_path_variance + step_length_variance;
+
+            //update current position and current position's covariance matrix
+            //position
+            double epv2 = Math.exp(-1*current_heading_variance/2);
+            double current_rad = OtherUtils.convertToRadAngle(currentHeading);
+            double cos = Math.cos(current_rad);
+            double sin = Math.sin(current_rad);
+            double[] pos = positionBeforeTurn.get(positionBeforeTurn.size()-1);
+            currentLocation.coordinateX = pos[0] + epv2
+                    *new_path_length*Math.cos(current_rad);
+            currentLocation.coordinateY = pos[1] + epv2
+                    *new_path_length*Math.sin(current_rad);
+
+            //covariance matrix
+
+            double[][] previous_cov_matrix_before_turn = position_covariance_matrices_before_turn.get(position_covariance_matrices_before_turn.size()-1);
+            current_position_covariance_matrix[0][0] = previous_cov_matrix_before_turn[0][0] + epv2*epv2*-1*new_path_length*new_path_length*cos*cos
+            + 0.5*(new_path_length*new_path_length + current_path_variance)*
+                    (cos*cos*(1+Math.exp(-2*current_heading_variance)) + sin*sin*(1-Math.exp(-2*current_heading_variance)));
+            current_position_covariance_matrix[1][1] = previous_cov_matrix_before_turn[1][1] + 0.5*(new_path_length*new_path_length + current_path_variance
+            + Math.exp(-2*current_heading_variance)*(-1*(new_path_length*new_path_length + current_path_variance)*Math.cos(2*current_rad)
+                    - 2*Math.exp(current_heading_variance)*new_path_length*new_path_length*sin*sin));
+            current_position_covariance_matrix[0][1] = previous_cov_matrix_before_turn[0][1]+ Math.exp(-2*current_heading_variance) * cos*sin*
+                    (-1*(-1 + Math.exp(current_heading_variance))*new_path_length*new_path_length + current_path_variance);
+            current_position_covariance_matrix[1][0] = current_position_covariance_matrix[0][1];
+
+            toastShow("New path length is " + new_path_length + ", Current cov matrix: %f   " + OtherUtils.round(current_position_covariance_matrix[0][0],5) + ", " + OtherUtils.round(current_position_covariance_matrix[0][1],5) +
+                    ", " + OtherUtils.round(current_position_covariance_matrix[0][1],5) + "," + OtherUtils.round(current_position_covariance_matrix[1][1],5), 0 );
+        }
+
+
+    }
+
+    void perform_turn(int turn_type) {
+        //update current heading
+        currentHeading = (currentHeading + turn_type)%8;
+        //update the path: add a new path, add the heading correspond to that path, add a new position and a new covariance matrix before turning
+        pathHeadings.add(currentHeading);
+        pathLengths.add(0.0);
+        double[] pos  = {currentLocation.coordinateX, currentLocation.coordinateY};
+        positionBeforeTurn.add(pos);
+        position_covariance_matrices_before_turn.add(current_position_covariance_matrix);
+
+        //update the path variance and the heading variance
+        current_path_variance = step_length_variance;
+        current_heading_variance = current_heading_variance + turning_variance;
+
+        toastShow("current heading variance"+ current_heading_variance, 0);
 
     }
     void resetLocalVariables() {

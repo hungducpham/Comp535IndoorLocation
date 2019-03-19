@@ -2,9 +2,15 @@ package group1.comp535.rice.indoorlocation.utils;
 /*@author: Hung Pham
  */
 
+import android.os.Environment;
+import android.util.Log;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 public class OtherUtils {
     public static int[] findKMinIndexArrayList(ArrayList<Double> inputs, int k) {
@@ -185,6 +191,150 @@ public class OtherUtils {
                 }
             }
         }
+        return result;
+    }
+
+    public static double dot(double[] a, double[]b ) {
+        if (a.length != b.length) {
+            System.out.print("Wrong dimension");
+            return 0;
+        }
+        double sum = 0;
+        for (int i = 0; i < a.length; i ++) {
+            sum += a[i]*b[i];
+        }
+        return sum;
+    }
+    public static int argmax(int[] a) {
+        int result =-1;
+        int max = a[0]-1;
+        for (int i = 0; i < a.length; i ++) {
+            if (a[i] > max ) {
+                result = i;
+                max = a[i];
+            }
+        }
+        return result;
+    }
+
+    public static int argmax(double[] a) {
+        int result =-1;
+        double max = a[0]-1;
+        for (int i = 0; i < a.length; i ++) {
+            if (a[i] > max ) {
+                result = i;
+                max = a[i];
+            }
+        }
+        return result;
+    }
+
+    public static double[][] importArrayFromFile(int dimension1, int dimension2, String fileName) {
+        double[][] result = new double[dimension1][dimension2];
+        try {
+            File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), fileName);
+            Scanner sc = new Scanner(file);
+
+            for (int i = 0; i < dimension1; i ++) {
+                for (int j =0; j < dimension2; j ++) {
+                    result[i][j] = Double.parseDouble(sc.next());
+                }
+            }
+
+        }
+        catch(IOException e) {
+            Log.e("Error", "Error opening file ");
+        }
+        return result;
+    }
+
+    public static double sum(double[] a) {
+        double result =0;
+        for(double b: a) {
+           result += b;
+        }
+        return result;
+    }
+
+    public static double maximum(double[] a) {
+        double result = a[0] -1;
+        for (double b: a) {
+            if (b > result) {
+                result = b;
+            }
+        }
+        return result;
+    }
+    public static double minimum(double[] a) {
+        double result = a[0] +1;
+        for (double b: a) {
+            if (b < result) {
+                result = b;
+            }
+        }
+        return result;
+    }
+
+    public static double[] abs(double[] a) {
+        double result[] = new double[a.length];
+        for(int i = 0; i < a.length; i ++) {
+            result[i] = Math.abs(a[i]);
+        }
+        return result;
+    }
+
+    public static double var(double[] a) {
+        double sum_square =0;
+        for (double b: a) {
+            sum_square += b*b;
+        }
+
+        double result = 1/a.length * (sum_square) - (sum(a)/a.length)*(sum(a)/a.length);
+        return result;
+    }
+
+    public static double convertToRadAngle(int heading) {
+        double pi = Math.PI;
+        double result;
+        switch (heading){
+            case 0:
+                result = 0;
+                break;
+            case 1:
+                result = -1*pi/4;
+                break;
+            case 2:
+                result = -1*pi/2;
+                break;
+            case 3:
+                result = -1*3*pi/4;
+                break;
+            case 4:
+                result = -1*pi;
+                break;
+            case 7:
+                result = pi/4;
+                break;
+            case 6:
+                result = pi/2;
+                break;
+            case 5:
+                result =  3*pi/2;
+                break;
+            default:
+                Log.v("Error", "Error converting heading to angle");
+                result = -10;
+                break;
+        }
+        return result;
+    }
+
+    public static double round(double number, int digits) {
+
+        float number2 = (float)(number*Math.pow(10, digits));
+        int number3 = Math.round(number2);
+        double result = number3/Math.pow(10, digits);
         return result;
     }
 }
