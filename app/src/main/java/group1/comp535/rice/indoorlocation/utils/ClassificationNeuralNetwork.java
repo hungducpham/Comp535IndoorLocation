@@ -2,8 +2,8 @@ package group1.comp535.rice.indoorlocation.utils;
 
 public class ClassificationNeuralNetwork extends NeuralNetwork {
 
-
-    public int predict(double[] inputs) {
+    @Override
+    public double predict(double[] inputs) {
         double[] result = feedForward(inputs); //size of result is nn_output_dim, in our case = 8
         int prediction = OtherUtils.getMaxIndex(result);
         return prediction;

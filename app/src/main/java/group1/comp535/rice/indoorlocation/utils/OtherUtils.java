@@ -337,6 +337,70 @@ public class OtherUtils {
         double result = number3/Math.pow(10, digits);
         return result;
     }
+
+    public static double[][] matrixSum(double[][] m1, double[][] m2) {
+        int m = m1.length;
+        int n = m1[0].length;
+        double[][] result = new double[m][n];
+        for(int i = 0; i < m; i ++) {
+            for(int j = 0; j<n; j ++) {
+                result[i][j] = m1[i][j] + m2[i][j];
+            }
+        }
+        return result;
+    }
+
+    public static double[][] invert2x2Matrix(double[][] inputs) {
+        double a = inputs[0][0];
+        double b = inputs[0][1];
+        double c = inputs[1][0];
+        double d = inputs[1][1];
+        double[][] result = new double[2][2];
+        double e = 1/(a*d-b*c);
+        result[0][0] = d/e;
+        result[0][1] = -1*b/e;
+        result[1][0] = -1*c/e;
+        result[1][1] = a/e;
+        return result;
+
+    }
+
+    public static double[][] matrix_times_coef(double[][] matrix, double coef) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        double[][] result = new double[m][n];
+        for(int i = 0; i< m; i ++) {
+            for (int j = 0; j <n; j ++) {
+                result[i][j] = matrix[i][j]*coef;
+            }
+        }
+        return result;
+    }
+    public static double[][] square_matrix_mul(double[][] a, double[][] b){
+        double[][] result = new double[a.length][a.length];
+        for(int i = 0; i < a.length; i ++) {
+
+            for(int j = 0; j < a.length; j ++) {
+                result[i][j] =0;
+                for (int k = 0; k < a.length; k ++) {
+                    result[i][j] += a[i][k] * b[k][j];
+                }
+
+            }
+        }
+        return result;
+    }
+    public static double[] get_features_array(double[] turningData) {
+        double[] result = new double[6];
+        result[0] = OtherUtils.sum(turningData);
+        result[1] = OtherUtils.maximum(turningData);
+        result[2] = OtherUtils.minimum(turningData);
+        result[3] = result[0] / turningData.length;
+        result[4] = OtherUtils.sum(OtherUtils.abs(turningData));
+        result[5] = OtherUtils.var(turningData);
+        return result;
+    }
+
 }
 
 

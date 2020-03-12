@@ -40,44 +40,40 @@ import group1.comp535.rice.indoorlocation.R;
 import group1.comp535.rice.indoorlocation.adapter.WiFiDataAdapter;
 import group1.comp535.rice.indoorlocation.data.LocationPoint;
 import group1.comp535.rice.indoorlocation.data.WiFiData;
+import group1.comp535.rice.indoorlocation.utils.OtherUtils;
 
-/**
- * Created by daiwei.ldw on 3/25/18.
- */
 
-public class WiFiLocationFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class WiFiLocationFragment extends Fragment {
 
-    //buttons
-    Button recordSensorButton;
-    Button saveButton;
-    Button discardButton;
-    Button startMeasureButton;
-    Button stopMeasureButton;
-    Button resetWiFiButton;
-    private EditText textX;
-    private EditText textY;
+    //Buttons and text boxes
+    Button recordSensorButton, saveButton, discardButton,startMeasureButton, stopMeasureButton, resetWiFiButton, testGPSButton;
+    EditText textX, textY;
+
+
     Intent batteryStatus;
 
+    /**
+     * variables to handle wifi
+     */
     List<WiFiData> wifidata = new LinkedList<WiFiData>();
     private WiFiDataAdapter adapter;
     WifiManager wifi;
+    private List<LocationPoint> savedWifiLocations;
+    private String wifiLocationTechnique = "KNN";
 
-    String currentSelection;
-    double currentBatteryLevel;
-    Queue<Long> start_time;
-    Handler timerHandler = new Handler();
-    Runnable timeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            long currentTimeMillis = System.currentTimeMillis();
-            //scanWiFiData();
-            //Toast.makeText(getContext(), "Scanning wifi data ", Toast.LENGTH_LONG).show();
-            scanWiFiData();
-            timerHandler.postDelayed(this, 400); //every 0.4 second
+    //variables to determine current mode of program
+    boolean determiningLocation = false;
+    boolean recordingWifiData = false;
+    boolean testGPS = false;
+    boolean testWifiBatteryConsumption = false;
 
 
-        }
-    };
+    //these variables are for testing of battery consumption of constantly broadcasting and receiving Wifi data
+    double previousBatteryLevel;
+    Handler timerHandler;
+    Runnable timeRunnable;
+
+    //the method called by main activity when initializing
     public static WiFiLocationFragment getInstance() {
         WiFiLocationFragment sf = new WiFiLocationFragment();
         return sf;
@@ -87,8 +83,16 @@ public class WiFiLocationFragment extends Fragment implements AdapterView.OnItem
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context = getContext();
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        batteryStatus = context.registerReceiver(null, ifilter);
+
+        requestPermissionCheck(context);
+        initVariables(context);
+    }
+
+    /**
+     * check if all the needed permissions are given
+     * @param context
+     */
+    void requestPermissionCheck(Context context) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 (context.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED)
                 ||(context.checkSelfPermission(Manifest.permission.CHANGE_WIFI_STATE) != PackageManager.PERMISSION_GRANTED)
@@ -99,14 +103,35 @@ public class WiFiLocationFragment extends Fragment implements AdapterView.OnItem
                             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     1);
 
-
             toastShow("Requesting permission", 0);
-            //Log.v("Permission","Permission Requesting");
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
 
         }else{
             toastShow("No need for permission", 0);
-            //Log.v("Permission","No Permission Issue");
+        }
+    }
+
+    /**
+     * init variables for the fragment
+     * @param context current context
+     */
+    void initVariables(Context context) {
+        //init variables for the testing of wifi battery consumption
+        //create a time runnable that repeats itself every 300 milliseconds
+        if (testWifiBatteryConsumption) {
+            IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            batteryStatus = context.registerReceiver(null, ifilter);
+
+            timerHandler = new Handler();
+            timeRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    long currentTimeMillis = System.currentTimeMillis();
+                    scanWiFiData();
+                    timerHandler.postDelayed(this, 300); //every 0.3 second
+
+                }
+            };
         }
     }
 
@@ -130,6 +155,14 @@ public class WiFiLocationFragment extends Fragment implements AdapterView.OnItem
         View v = inflater.inflate(R.layout.wifi_location_fragment, null);
         ListView listView = (ListView) v.findViewById(R.id.recorded_wifi);
 
+        initButtons(v);
+
+        setUpWifi(v, listView);
+        return v;
+    }
+
+
+    public void initButtons(View v) {
         recordSensorButton = v.findViewById(R.id.record_wifi);
         discardButton = v.findViewById(R.id.discard_wifi);
         saveButton =  v.findViewById(R.id.save_wifi);
@@ -138,6 +171,18 @@ public class WiFiLocationFragment extends Fragment implements AdapterView.OnItem
         resetWiFiButton = v.findViewById(R.id.reset_wifi);
         textX = v.findViewById(R.id.coordX);
         textY = v.findViewById(R.id.coordY);
+        testGPSButton = v.findViewById(R.id.gps_test);
+        if (testWifiBatteryConsumption) {
+            recordSensorButton.setVisibility(View.INVISIBLE);
+            resetWiFiButton.setVisibility(View.INVISIBLE);
+            startMeasureButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            recordSensorButton.setVisibility(View.VISIBLE);
+            resetWiFiButton.setVisibility(View.VISIBLE);
+            startMeasureButton.setVisibility(View.INVISIBLE);
+        }
+
 
         recordSensorButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,24 +222,25 @@ public class WiFiLocationFragment extends Fragment implements AdapterView.OnItem
                 resetWiFiButtonClicked();
             }
         });
+        testGPSButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GPSButtonClicked();
+            }
+        });
+    }
 
-        /**
-        Spinner spinner = (Spinner) v.findViewById(R.id.curentLocationSpinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> array_adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.Position_Array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        array_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(array_adapter);
-        spinner.setOnItemSelectedListener(this);
-        **/
-
+    /**
+     * The method below handles Wifi activities
+     *
+     * @param v current view
+     * @param listView current list view
+     */
+    public void setUpWifi(View v, ListView listView) {
         adapter = new WiFiDataAdapter(getActivity(),wifidata);
         listView.setAdapter(adapter);
-
         wifi = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (wifi.isWifiEnabled() == false)
+        if (wifi.isWifiEnabled() == false) //if Wifi is disabled in your phone
         {
             Toast.makeText(getContext().getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
             wifi.setWifiEnabled(true);
@@ -203,16 +249,22 @@ public class WiFiLocationFragment extends Fragment implements AdapterView.OnItem
         getContext().registerReceiver(new BroadcastReceiver()
         {
             @Override
+            /**
+             * Method called when receive Wifi input
+             *
+             */
+
             public void onReceive(Context c, Intent intent)
             {
+                boolean success = intent.getBooleanExtra(
+                        WifiManager.EXTRA_RESULTS_UPDATED, false);
+                if (success) toastShow("receive something", 0);
+                else toastShow("unsuccessful scan", 0);
 
-                long end_time = System.currentTimeMillis();
-                wifidata.clear();
-                List<ScanResult> results = wifi.getScanResults();
-                if(start_time != null && !start_time.isEmpty()) {
-                    long start_timer = start_time.poll();
-                    toastShow("scanned result received, size: " + results.size() + " in time: " + (end_time - start_timer) / 1000.0 + " seconds", 0);
-                }
+                wifidata.clear(); //clear current wifi data buffer
+                List<ScanResult> results = wifi.getScanResults(); //get wifi scan result
+
+                //only record results from Rice Owls/Rice IoT/Rice Visitor/eduroam networks
                 for (ScanResult result : results) {
                     if (result.SSID.contentEquals("Rice Owls")  || result.SSID.contentEquals("Rice IoT")||result.SSID.contentEquals("Rice Visitor")||result.SSID.contentEquals("eduroam")){
 //                        WifiManager.calculateSignalLevel(result.level, 100);
@@ -220,58 +272,144 @@ public class WiFiLocationFragment extends Fragment implements AdapterView.OnItem
                     }
                 }
                 adapter.notifyDataSetChanged();
-                if (recordSensorButton.getVisibility() == View.INVISIBLE) {
+
+                if (recordingWifiData)
+                {
+
                     textX.setVisibility(View.VISIBLE);
                     textY.setVisibility(View.VISIBLE);
                     discardButton.setVisibility(View.VISIBLE);
                     saveButton.setVisibility(View.VISIBLE);
+                    recordingWifiData = false;
+                }
+
+                //if is determining location
+                if(determiningLocation) {
+                    LocationPoint resultLocation = determineWiFiLocation(wifidata, savedWifiLocations, wifiLocationTechnique);
+                    toastShow("Result location coordinate X: " + resultLocation.coordinateX + ", coordinate Y: " + resultLocation.coordinateY, 0);
+                    determiningLocation = false;
                 }
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 //        this.scanWiFiData();
 
-        return v;
-    }
-
-    private void recordLocation() {
-        if (this.currentSelection == null || this.currentSelection.length() == 0){
-            Toast.makeText(getContext(),"Please make a selection",Toast.LENGTH_SHORT);
-            return;
-        }
-
+        //get the list of saved Wifi locations from json file
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-
-        LocationPoint tempPoint = new LocationPoint();
-        tempPoint.setLocationName(this.currentSelection);
-        tempPoint.setWifiData(this.wifidata);
+        Set<String> nameList = sharedPref.getStringSet("namelist", new HashSet<String>());
 
         Gson gson = new Gson();
-        String json = gson.toJson(tempPoint);
+        this.savedWifiLocations = new ArrayList<>();
+        for (String tempName : nameList) {
+            String tempData = sharedPref.getString(tempName, "");
 
+            if (tempData.length() != 0) {
+                LocationPoint obj = gson.fromJson(tempData, LocationPoint.class);
+                savedWifiLocations.add(obj);
+            }
+        }
+        toastShow("Number of saved WiFi locations: " + savedWifiLocations.size(), 0);
+    }
+
+    /**
+     * record Wifi location
+     * @param x the x coordinate of the location
+     * @param y the y coordinate of the location
+     */
+    private void recordLocation(double x, double y) {
+        String locationName = "" + x + "," + y;
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         Set<String> nameList =  sharedPref.getStringSet("namelist",new HashSet<String>());
-        nameList.add(this.currentSelection);
+        Gson gson = new Gson();
 
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(this.currentSelection,json);
-        editor.putStringSet("namelist",nameList);
-        editor.commit();
+
+        /*here we assume that location must be unique. However, you might want to have duplicate data for one location
+         * Please experiment with different mode to see which one works the best
+         */
+        if(!nameList.contains(locationName))
+        {
+
+            //create new location point with the associated wifi data
+            LocationPoint tempPoint = new LocationPoint();
+            tempPoint.setLocationName(locationName);
+            tempPoint.setWifiData(this.wifidata);
+            tempPoint.coordinateX = x;
+            tempPoint.coordinateY = y;
+            String json = gson.toJson(tempPoint);
+
+            //add the new location point to the json file
+            nameList.add(locationName);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(locationName,json);
+            editor.putStringSet("namelist",nameList);
+            editor.commit();
+            toastShow("saved location " + locationName + ", size of wifi: "+ this.wifidata.size(), 0);
+        }
+//        else
+//        {
+//            String obj_string = sharedPref.getString(locationName, "");
+//            if (obj_string.length() != 0) {
+//                LocationPoint tempPoint = gson.fromJson(obj_string, LocationPoint.class);
+//                tempPoint.addNewMeasurement(this.wifidata);
+//                toastShow("updating measurements of location "+ locationName+ ", size of wifi: "+ tempPoint.wifidata.size(), 0);
+//            }
+//
+//        }
+
+
+    }
+
+
+    /**
+     * Determine wifi location based on saved locations
+     * @param savedWifiLocations
+     * @return
+     */
+    public LocationPoint determineWiFiLocation(List<WiFiData> wifidata, List<LocationPoint> savedWifiLocations, String wifiLocationTechnique) {
+        LocationPoint resultLocation = new LocationPoint();
+        if (savedWifiLocations.size() == 0) {
+            Toast.makeText(getContext(), "No WiFi location recorded", Toast.LENGTH_SHORT).show();
+            return resultLocation;
+        }
+        //if using KNN
+        if (wifiLocationTechnique.equals("KNN"))
+        {
+            int KNNsize = 3; //this hyperparameter is subjected to tuning
+            //get the nearest k neighbors
+            ArrayList<Double> KNNDistances = new ArrayList<>();
+            resultLocation.setWifiData(wifidata);
+            for (int i = 0; i < savedWifiLocations.size(); i++) {
+                KNNDistances.add(resultLocation.calculateWiFiSignalDistance(savedWifiLocations.get(i), 1));
+            }
+
+            int[] nearestNeighborsIndex = OtherUtils.findKMinIndexArrayList(KNNDistances, KNNsize);
+
+            LocationPoint[] nearestNeighbors = new LocationPoint[KNNsize];
+            for (int i = 0; i < KNNsize; i++) {
+                nearestNeighbors[i] = savedWifiLocations.get(nearestNeighborsIndex[i]);
+            }
+            double numeratorX = 0, numeratorY = 0, denominator = 0;
+            for (LocationPoint nearestNeighbor : nearestNeighbors) {
+                double t = 1 / resultLocation.calculateWiFiSignalDistance(nearestNeighbor, 1);
+                numeratorX += t * nearestNeighbor.coordinateX;
+                denominator += t;
+                numeratorY += t * nearestNeighbor.coordinateY;
+            }
+
+            resultLocation.coordinateX = numeratorX / denominator;
+            resultLocation.coordinateY = numeratorY / denominator;
+        }
+        return resultLocation;
     }
 
     public void scanWiFiData()
     {
-
-        //Log.v("WiFi Refresh","Refreshing");
-        long time = System.currentTimeMillis();
-        start_time.add(time);
         boolean result = false;
         result = wifi.startScan();
-        //toastShow("Wifi scanned, result: " + result, 0);
-
-
-
     }
 
     public void recordSensorButtonClicked() {
+        recordingWifiData = true;
         recordSensorButton.setVisibility(View.INVISIBLE);
         startMeasureButton.setVisibility(View.INVISIBLE);
         toastShow("Scanning WiFi data, please wait", 0);
@@ -285,62 +423,72 @@ public class WiFiLocationFragment extends Fragment implements AdapterView.OnItem
         discardButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
         recordSensorButton.setVisibility(View.VISIBLE);
-        startMeasureButton.setVisibility(View.VISIBLE);
         textX.setVisibility(View.INVISIBLE);
         textY.setVisibility(View.INVISIBLE);
     }
 
 
     public void saveButtonClicked() {
+        recordLocation(Double.parseDouble(textX.getText().toString()), Double.parseDouble(textY.getText().toString()));
         discardButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
         recordSensorButton.setVisibility(View.VISIBLE);
-        startMeasureButton.setVisibility(View.VISIBLE);
         textX.setVisibility(View.INVISIBLE);
         textY.setVisibility(View.INVISIBLE);
     }
 
-    public void startMeasureButtonClicked() {
-        startMeasureButton.setVisibility(View.INVISIBLE);
-        stopMeasureButton.setVisibility(View.VISIBLE);
-        currentBatteryLevel = getBatteryLevel();
-        timerHandler.post(timeRunnable);
-        start_time = new LinkedList<Long>();
-    }
-    public void stopMeasureButtonClicked() {
-        stopMeasureButton.setVisibility(View.INVISIBLE);
-        timerHandler.removeCallbacks(timeRunnable);
-        double batteryLevel = getBatteryLevel();
-        double consumption = batteryLevel - currentBatteryLevel;
-        toastShow("Percentage battery consumption: " + consumption, 0);
-        startMeasureButton.setVisibility(View.VISIBLE);
-
-    }
-
+    /**
+     * Reset all saved wifi locations - Use with caution
+     * */
     public void resetWiFiButtonClicked() {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         sharedPref.edit().clear().commit();
         toastShow("WiFi data cleared", 0);
-
-
-
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.v("Select Item",adapterView.getItemAtPosition(i).toString());
-        currentSelection = adapterView.getItemAtPosition(i).toString();
+
+    /**
+     * start measure and stop measure buttons are for measuring the battery consumption of constantly receiving Wifi data
+     */
+
+    public void startMeasureButtonClicked() {
+        startMeasureButton.setVisibility(View.INVISIBLE);
+        stopMeasureButton.setVisibility(View.VISIBLE);
+        previousBatteryLevel = getBatteryLevel();
+        timerHandler.post(timeRunnable);
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        Log.v("Select Item","No Item Selected");
+
+    public void stopMeasureButtonClicked() {
+        stopMeasureButton.setVisibility(View.INVISIBLE);
+        timerHandler.removeCallbacks(timeRunnable);
+        double batteryLevel = getBatteryLevel();
+        double consumption = batteryLevel - previousBatteryLevel;
+        toastShow("Percentage battery consumption: " + consumption, 0);
+        startMeasureButton.setVisibility(View.VISIBLE);
     }
 
+
+
+    /**
+     * Do nothing for now
+     */
+    public void GPSButtonClicked() {
+    }
+
+    /**
+     * Show the message in phone
+     * @param s string message
+     * @param n time to show the message in second
+     */
     public void toastShow(String s, int n) {
         Toast.makeText(getContext(), s, n).show();
     }
 
+    /**
+     * get current battery level
+     * @return current battery level
+     */
     double getBatteryLevel() {
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         batteryStatus = getContext().registerReceiver(null, ifilter);

@@ -2,13 +2,18 @@ package group1.comp535.rice.indoorlocation.utils;
 
 import java.util.ArrayList;
 
+/**
+ * Step detection utility
+ * Please note that this is the standalone version. There is a version to detect step on the fly in each fragment class. Any modification
+ * to the step detection scheme should be reflected in both this and the fragment's code.
+ */
 public class StepDetectionUtil {
 
     /**
      * determine the start of each step
      *
      * @param input the accelerator data recorded and filtered through Butterworth filter.
-     * @return the start of each step
+     * @return the start index of each step in the data array
      */
     public static int[] detectStep(double[] input) {
         ArrayList<Integer> steps = new ArrayList<>();
@@ -19,10 +24,10 @@ public class StepDetectionUtil {
         int current_low_index = 0;
         int previous_low_index = 0;
         int current_high_index = 0;
-        double difference_threshold = 1.25;
-        double low_threshold = 1.5;
-        double high_slope_threshold = 0.5;
-        int step_length_threshold = 5;
+        double difference_threshold = 1.5;
+        double low_threshold = 1;
+        double high_slope_threshold = 1;
+        int step_length_threshold = 7;
 
         boolean newStep = false;
         for (int i = 2; i < input.length; i ++) {
@@ -66,7 +71,13 @@ public class StepDetectionUtil {
         return returnedSteps;
     }
 
-    public static int[] detectStepRaw(double[] input) {
+    /**
+     * Function to detect steps from raw accelerometer input (input not applied Butterworth filter)
+     * @param input accelerometer data recorded but not filtered through Butterworth
+     * @return the starting indices of each step in the data array
+     */
+    public static int[] detectStepRaw(double[] input)
+    {
         int s = input.length;
         ArrayList<Integer> steps = new ArrayList<>();
         double current_high = 0;

@@ -1,15 +1,13 @@
 package group1.comp535.rice.indoorlocation.utils;
 
-import android.util.Log;
-
-public class LinearSVC {
+public class LinearSVC extends PredictiveModel {
 
     private double[][] coef;
     private double[][] intercept;
     private int n_features;
     private int n_class;
-    public LinearSVC() {
 
+    public LinearSVC() {
     }
 
     public void reconstruct(double[][] coef, double[][] intercept) {
@@ -18,10 +16,10 @@ public class LinearSVC {
         this.n_features = coef[0].length;
         int k = intercept.length;
         this.n_class = (int)Math.floor(Math.sqrt(k*2)) + 1;
-        Log.v("DEBUG","Reconstruct SVC, n_class: " + n_class + ", n_features: " + n_features);
+        //Log.v("DEBUG","Reconstruct SVC, n_class: " + n_class + ", n_features: " + n_features);
     }
 
-    public int predict(double[] input_features) {
+    public double predict(double[] input_features) {
         int result = -1;
         int[] scores = new int[this.n_class];
         for( int i = 0; i < this.n_class; i ++) {
@@ -40,12 +38,15 @@ public class LinearSVC {
         return result;
     }
 
+    /**
+     * reconstruct model from 2 files: "turning_model_coef.txt" and "turning_model_intercept.txt"
+     */
     public void reconstruct_from_file() {
         int length = 28;
         int n_features = 6;
         int n_class = 8;
-        double[][] coef = OtherUtils.importArrayFromFile(length, n_features, "turning_linear_svm_coef.txt");
-        double[][] intercept = OtherUtils.importArrayFromFile(length, 1, "tuninng_linear_svm_intercept.txt");
+        double[][] coef = OtherUtils.importArrayFromFile(length, n_features, "turning_model_coef.txt");
+        double[][] intercept = OtherUtils.importArrayFromFile(length, 1, "tuninng_model_intercept.txt");
         reconstruct(coef, intercept);
 
     }

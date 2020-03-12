@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="164dp"
+        android:background="@color/colorPureWhite">
+
+        <Button
+            android:id="@+id/sensor_finish2"
+            android:layout_width="123dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/start"
+            android:layout_marginTop="51dp"
+            android:layout_marginEnd="102dp"
+            android:layout_toStartOf="@+id/sensor_reset"
+            android:text="StopRecording"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/sensor_record2"
+            android:layout_width="124dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="2dp"
+            android:enabled="true"
+            android:text="Record Sensor Data"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/sensor_save2"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:text="Save Sensor Data"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/sensor_discard2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/txtX"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="125dp"
+            android:text="Discard data"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/sensor_reset2"
+            android:layout_width="135dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:text="Reset Data" />
+
+        <EditText
+            android:id="@+id/txtX_sensor2"
+            android:layout_width="116dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sensor_reset2"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="127dp"
+            android:layout_marginBottom="3dp"
+            android:contentDescription="Enter X"
+            android:ems="10"
+            android:inputType="numberDecimal|numberSigned"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/sensor_start_measure"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="1dp"
+            android:text="start measure"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/sensor_stop_measure"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="1dp"
+            android:text="stop measure"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

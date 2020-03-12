@@ -9,7 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class NeuralNetwork {
+public class NeuralNetwork extends PredictiveModel {
     int nn_input_dim;
     int nn_hidden_dim;
     int nn_hidden_layer;
@@ -24,22 +24,14 @@ public class NeuralNetwork {
     double[][] b2;
 
     public NeuralNetwork() {
-
-    }
-    public NeuralNetwork(int nn_input_dim, int nn_hidden_dim, int nn_hidden_layer, int nn_output_dim, String nn_actFun_type) {
-        this.nn_input_dim = nn_input_dim;
-        this.nn_hidden_dim = nn_hidden_dim;
-        this.nn_hidden_layer = nn_hidden_layer;
-        this.nn_output_dim = nn_output_dim;
-        this.nn_actFun_type = nn_actFun_type;
-
+        reconstruct_from_file();
     }
 
-    public void importFromFile(int mode) {
+    public void reconstruct_from_file() {
+
         try {
-
             File model_info = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS), "model" + mode+"_info.txt");
+                    Environment.DIRECTORY_DOCUMENTS), "distance_model_info.txt");
             FileReader fileReader = new FileReader(model_info);
             BufferedReader bfReader = new BufferedReader(fileReader);
             String info = bfReader.readLine();
@@ -50,10 +42,10 @@ public class NeuralNetwork {
             this.nn_actFun_type = info.split(" ")[4];
 
 
-            this.WIn = importArrayFromFile(this.nn_input_dim, this.nn_hidden_dim, "model" + mode + "_WIn.txt");
-            this.b1 = importArrayFromFile(1, this.nn_hidden_dim, "model" + mode + "_b1.txt");
+            this.WIn = importArrayFromFile(this.nn_input_dim, this.nn_hidden_dim, "distance_model" + "_WIn.txt");
+            this.b1 = importArrayFromFile(1, this.nn_hidden_dim, "distance_model" + "_b1.txt");
 
-            double[][] WHiddenTemp = importArrayFromFile(this.nn_hidden_layer-1, nn_hidden_dim* nn_hidden_dim, "model" + mode + "_WHidden.txt");
+            double[][] WHiddenTemp = importArrayFromFile(this.nn_hidden_layer-1, nn_hidden_dim* nn_hidden_dim, "distance_model"+ "_WHidden.txt");
             //convert the 2-dimensional WHiddenTemp to 3-dimensional WHidden
             this.WHidden = new double[this.nn_hidden_layer-1][this.nn_hidden_dim][this.nn_hidden_dim];
             for (int i = 0; i <this.nn_hidden_layer-1; i ++ ) {
@@ -65,9 +57,9 @@ public class NeuralNetwork {
                 }
             }
 
-            this.bHidden = importArrayFromFile(nn_hidden_layer-1, nn_hidden_dim, "model" + mode+"_bHidden.txt");
-            this.WOut = importArrayFromFile(nn_hidden_dim, nn_output_dim, "model" + mode +"_WOut.txt");
-            this.b2 = importArrayFromFile(1, nn_output_dim, "model" + mode+"_b2.txt");
+            this.bHidden = importArrayFromFile(nn_hidden_layer-1, nn_hidden_dim, "distance_model" + "_bHidden.txt");
+            this.WOut = importArrayFromFile(nn_hidden_dim, nn_output_dim, "distance_model" +"_WOut.txt");
+            this.b2 = importArrayFromFile(1, nn_output_dim, "distance_model"+"_b2.txt");
             Log.v("Load", "Finish loading");
 
         }
@@ -75,6 +67,12 @@ public class NeuralNetwork {
             Log.e("Error", "Error opening file ");
         }
     }
+
+    public double predict(double[] inputs) {
+        return feedForward(inputs)[0];
+    }
+
+
 
     double[][] importArrayFromFile(int dimension1, int dimension2, String fileName) {
         double[][] result = new double[dimension1][dimension2];
@@ -97,7 +95,7 @@ public class NeuralNetwork {
     }
 
     public double[] feedForward(double[] inputs) {
-        double[] result = new double[nn_output_dim];
+        double[] result;
         //first pad 0 until the input has nn_input_dim size
         double[] inputs2 = new double[this.nn_input_dim];
         for(int i = 0; i < this.nn_input_dim; i ++) {
@@ -122,9 +120,9 @@ public class NeuralNetwork {
         result = outputNodes;
 
         return result;
-
-
     }
+
+
 
     public double[] actFun(double[] inputs) {
         double[] result = new double[inputs.length];

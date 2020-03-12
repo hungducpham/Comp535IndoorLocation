@@ -8,45 +8,33 @@ import java.util.List;
 
 import group1.comp535.rice.indoorlocation.utils.OtherUtils;
 
-/**
- * Created by daiwei.ldw on 4/11/18.
- */
+
 
 public class LocationPoint {
 
-    List<WiFiData> wifidata = new LinkedList<WiFiData>();
-    HashMap<String,WiFiData> searchMap = new HashMap<>();
-    String locationName;
+    public List<WiFiData> wifidata = new LinkedList<WiFiData>();
+    public HashMap<String,WiFiData> searchMap = new HashMap<>();
+    public String locationName;
 
-    public double x = 0;
-    public double y = 0;
+
     public double coordinateX = 0;
     public double coordinateY = 0;
-    public String type;
-    public double previousCoordinateX = 0;
-    public double previousCoordinateY = 0;
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
+    public String type; //might want to include multiple type of location point
+    //public int multiplicity = 1;
 
     public String getLocationName() {
         return locationName;
     }
 
+    /**
+     * Set location name and coordinate
+     * @param locationName in the format "x, y" where x, y are doubles
+     */
     public void setLocationName(String locationName) {
         this.locationName = locationName;
+        this.coordinateX = Double.parseDouble(locationName.split(" ")[0]);
+        this.coordinateY = Double.parseDouble(locationName.split(" ")[1]);
 
-        String positions[] = this.locationName.split("_");
-        if (positions.length == 3) {
-            this.type = positions[0];
-            x = Integer.parseInt(positions[1]);
-            y = Integer.parseInt(positions[2]);
-            convertToCoordinate();
-        }
     }
 
     public List<WiFiData> getWiFiData() {
@@ -62,6 +50,23 @@ public class LocationPoint {
 
     }
 
+    //enable multiple wifi signal recordings of one location point
+    /**
+    public void addNewMeasurement(List<WiFiData> new_wifidata){
+        for (int i = 0; i < new_wifidata.size(); i ++) {
+            WiFiData data = new_wifidata.get(i);
+            for(int j = 0; j < this.wifidata.size(); j ++) {
+                WiFiData data2 = this.wifidata.get(j);
+                if (data2.getBSSID().equals(data.getBSSID())) {
+                    data2.strength = (data2.strength*multiplicity + data.strength)/(multiplicity + 1);
+                }
+            }
+        }
+        this.multiplicity += 1;
+    }
+     **/
+
+
     /**
      *
      * @param wifiTestPoint
@@ -71,11 +76,6 @@ public class LocationPoint {
     public double calculateWiFiSignalDistance(LocationPoint wifiTestPoint, int distanceMode) {
 
         double cost = -1;
-
-        if(distanceMode != 1) {
-            Log.e("Error", "wrong distance mode or wrong input");
-            return cost;
-        }
         if (distanceMode ==1) {
             for (WiFiData tempData : this.wifidata) {
                 WiFiData correspondingData = wifiTestPoint.searchForWiFiData(tempData);
@@ -83,8 +83,10 @@ public class LocationPoint {
                 if (correspondingData != null) {
                     //calculate strength different and add to cost
                     tempValue = Math.abs(tempData.getStrength1() - correspondingData.getStrength1());
+
                 } else {
-                    tempValue = tempData.getStrength1()*10;
+                    //tempValue = tempData.getStrength1()*10;
+                    tempValue = 0; //we only care about the WAP that is inside for both of the measurement
                 }
                 cost += tempValue * tempValue;
             }
@@ -110,17 +112,7 @@ public class LocationPoint {
         return cost;
     }
 
-    public void convertToCoordinate() {
-        if (type.equalsIgnoreCase("lobby")) {
-            coordinateX = 5.7 *x; coordinateY = 3.5 * y;
-        }
-        else if (type.equalsIgnoreCase("hallway")) {
-            coordinateX = 5.7*x; coordinateY = 5.7*y;
-        }
-        else {
-            coordinateX = -1; coordinateY = -1;
-        }
-    }
+
     public WiFiData searchForWiFiData(WiFiData tempData){
         return this.searchMap.get(tempData.getBSSID());
     }
@@ -135,21 +127,11 @@ public class LocationPoint {
      */
 
 
-    public void move(double distance, int heading) {
-        previousCoordinateX = coordinateX;
-        previousCoordinateY = coordinateY;
-        double[] moveDirection = OtherUtils.mapHeadingToMatrix(heading);
-        this.coordinateX = this.previousCoordinateX + distance*moveDirection[0];
-        this.coordinateY = this.previousCoordinateY + distance*moveDirection[1];
-
-
-    }
-
-
+    /**
     public void correction_move(double distance, int heading) {
         double[] moveDirection = OtherUtils.mapHeadingToMatrix(heading);
         this.coordinateX = this.previousCoordinateX +  distance*moveDirection[0];
         this.coordinateY = this.previousCoordinateY + distance*moveDirection[1];
     }
-
+     **/
 }

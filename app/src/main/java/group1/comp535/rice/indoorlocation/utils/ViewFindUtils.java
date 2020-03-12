@@ -39,11 +39,11 @@ public class ViewFindUtils
 		return (T) childView;
 	}
 
-	/**
-	 * 替代findviewById方法
-	 */
+
 	public static <T extends View> T find(View view, int id)
 	{
 		return (T) view.findViewById(id);
 	}
+
+
 }

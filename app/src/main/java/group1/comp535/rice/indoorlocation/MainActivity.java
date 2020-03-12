@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectListen
     private Context mContext = this;
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private final String[] mTitles = {
-            "Record Location", "Locating","Record sensor"
+            "Record Wifi","Record sensor", "Combined Location"
     };
     private MyPagerAdapter mAdapter;
 
@@ -40,7 +40,9 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectListen
         this.getSupportActionBar().setElevation((float) 0.0);
 
         mFragments.add(WiFiLocationFragment.getInstance());
-        mFragments.add(CombinedLocatingFragment.getInstance());
+        mFragments.add(SensorDataCollectionFragment.getInstance());
+        //mFragments.add(CombinedLocatingFragment.getInstance());
+
         View decorView = getWindow().getDecorView();
         ViewPager vp = ViewFindUtils.find(decorView, R.id.vp);
         mAdapter = new MyPagerAdapter(getSupportFragmentManager());
